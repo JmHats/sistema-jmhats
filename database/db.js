@@ -1,10 +1,9 @@
 const Database = require('better-sqlite3');
-const path = require('path');
 
-const dbPath = path.join(__dirname, 'database.db');
-const db = new Database(dbPath);
+// 🔥 Crear la base de datos en la raíz (compatible con Render)
+const db = new Database('database.db');
 
-// 🔥 CREAR TABLAS
+// 🔥 CREAR TABLAS SI NO EXISTEN
 db.exec(`
     CREATE TABLE IF NOT EXISTS clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
