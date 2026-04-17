@@ -1,170 +1,86 @@
-const express = require('express');
-const path = require('path');
-const db = require('./database/db');
+async function agregarCliente() {
+    const nombre = document.getElementById('nombre').value;
 
-const app = express();
-
-// 🔥 MIDDLEWARES
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-//////////////////////////////
-// 🔷 CLIENTES
-//////////////////////////////
-
-// 🔍 Obtener clientes con productos y pagos
-app.get('/clientes', (req, res) => {
-    try {
-        const search = (req.query.search || '').toLowerCase();
-
-        let query = `SELECT * FROM clientes`;
-        let params = [];
-
-        if (search) {
-            query += ` WHERE LOWER(nombre) LIKE ?`;
-            params.push(`%${search}%`);
+    const productos = [
+        {
+            nombre: document.getElementById('producto1').value,
+            precio: parseFloat(document.getElementById('precio1').value) || 0
+        },
+        {
+            nombre: document.getElementById('producto2').value,
+            precio: parseFloat(document.getElementById('precio2').value) || 0
+        },
+        {
+            nombre: document.getElementById('producto3').value,
+            precio: parseFloat(document.getElementById('precio3').value) || 0
         }
+    ];
 
-        const clientes = db.prepare(query).all(...params);
+    await fetch('/clientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, productos })
+    });
 
-        const result = clientes.map(cliente => {
-            const productos = db.prepare(
-                `SELECT * FROM productos WHERE cliente_id = ?`
-            ).all(cliente.id);
+    alert('Cliente agregado 🔥');
+    cargarClientes();
+}
 
-            const pagos = db.prepare(
-                `SELECT * FROM pagos WHERE cliente_id = ?`
-            ).all(cliente.id);
+async function cargarClientes() {
+    const busqueda = document.getElementById('busqueda').value;
 
-            return {
-                ...cliente,
-                productos,
-                pagos
-            };
-        });
+    const res = await fetch('/clientes?search=' + busqueda);
+    const clientes = await res.json();
 
-        res.json(result);
+    const tabla = document.getElementById('tablaClientes');
+    tabla.innerHTML = '';
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json(error);
-    }
-});
+    clientes.forEach(c => {
 
+        const totalPagado = c.pagos.reduce((sum, p) => sum + p.monto, 0);
+        const saldo = c.deuda - totalPagado;
 
-// ➕ Agregar cliente
-app.post('/clientes', (req, res) => {
-    try {
-        const { nombre, productos } = req.body;
+        tabla.innerHTML += `
+        <tr>
+            <td>${c.nombre}</td>
+            <td>${c.productos.map(p => p.nombre + ' ($' + p.precio + ')').join('<br>')}</td>
+            <td>${new Date(c.fecha).toLocaleDateString()}</td>
+            <td>$${c.deuda}</td>
+            <td>$${totalPagado}</td>
+            <td>$${saldo}</td>
+            <td>
+                <input id="pago_${c.id}" placeholder="Monto">
+                <button onclick="pagar(${c.id})">Pagar</button>
+            </td>
+            <td>
+                <button onclick="eliminar(${c.id})">Eliminar</button>
+            </td>
+        </tr>
+        `;
+    });
+}
 
-        const productosValidos = (productos || []).filter(p => p.nombre);
+async function pagar(id) {
+    const monto = document.getElementById('pago_' + id).value;
 
-        const deuda = productosValidos.reduce(
-            (sum, p) => sum + (p.precio || 0), 0
-        );
+    await fetch('/pago/' + id, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monto: parseFloat(monto) })
+    });
 
-        const result = db.prepare(
-            `INSERT INTO clientes (nombre, deuda, fecha) VALUES (?, ?, ?)`
-        ).run(nombre, deuda, new Date());
+    cargarClientes();
+}
 
-        const clienteId = result.lastInsertRowid;
+async function eliminar(id) {
+    await fetch('/clientes/' + id, { method: 'DELETE' });
+    cargarClientes();
+}
 
-        productosValidos.forEach(p => {
-            db.prepare(
-                `INSERT INTO productos (cliente_id, nombre, precio) VALUES (?, ?, ?)`
-            ).run(clienteId, p.nombre, p.precio);
-        });
+function verTodos() {
+    document.getElementById('busqueda').value = '';
+    cargarClientes();
+}
 
-        res.sendStatus(200);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
-
-
-// ➕ Agregar productos a cliente
-app.post('/clientes/:id/productos', (req, res) => {
-    try {
-        const clienteId = req.params.id;
-        const productos = req.body.productos || [];
-
-        let totalExtra = 0;
-
-        productos.forEach(p => {
-            if (p.nombre) {
-                db.prepare(
-                    `INSERT INTO productos (cliente_id, nombre, precio) VALUES (?, ?, ?)`
-                ).run(clienteId, p.nombre, p.precio);
-
-                totalExtra += (p.precio || 0);
-            }
-        });
-
-        db.prepare(
-            `UPDATE clientes SET deuda = deuda + ? WHERE id = ?`
-        ).run(totalExtra, clienteId);
-
-        res.sendStatus(200);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
-
-
-// 💰 Registrar pago
-app.post('/pago/:id', (req, res) => {
-    try {
-        const clienteId = req.params.id;
-        const { monto } = req.body;
-
-        db.prepare(
-            `INSERT INTO pagos (cliente_id, monto, fecha) VALUES (?, ?, ?)`
-        ).run(clienteId, monto, new Date());
-
-        res.sendStatus(200);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
-
-
-// ❌ Eliminar cliente
-app.delete('/clientes/:id', (req, res) => {
-    try {
-        const id = req.params.id;
-
-        db.prepare(`DELETE FROM clientes WHERE id = ?`).run(id);
-        db.prepare(`DELETE FROM productos WHERE cliente_id = ?`).run(id);
-        db.prepare(`DELETE FROM pagos WHERE cliente_id = ?`).run(id);
-
-        res.sendStatus(200);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
-
-//////////////////////////////
-// 🏠 RUTA PRINCIPAL
-//////////////////////////////
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/pagos/index.html'));
-});
-
-//////////////////////////////
-// 🚀 SERVIDOR (FIX RENDER)
-//////////////////////////////
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
-});
+// Cargar al iniciar
+cargarClientes();
