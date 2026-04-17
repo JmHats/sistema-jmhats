@@ -46,8 +46,8 @@ app.get('/clientes', (req, res) => {
         res.json(result);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json(error);
+        console.error("ERROR GET CLIENTES:", error);
+        res.status(500).send(error.message);
     }
 });
 
@@ -57,6 +57,10 @@ app.post('/clientes', (req, res) => {
     try {
         const { nombre, productos } = req.body;
 
+        if (!nombre) {
+            return res.status(400).send("Nombre requerido");
+        }
+
         const productosValidos = (productos || []).filter(p => p.nombre);
 
         const deuda = productosValidos.reduce(
@@ -65,7 +69,7 @@ app.post('/clientes', (req, res) => {
 
         const result = db.prepare(
             `INSERT INTO clientes (nombre, deuda, fecha) VALUES (?, ?, ?)`
-        ).run(nombre, deuda, new Date());
+        ).run(nombre, deuda, new Date().toISOString());
 
         const clienteId = result.lastInsertRowid;
 
@@ -78,8 +82,8 @@ app.post('/clientes', (req, res) => {
         res.sendStatus(200);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+        console.error("ERROR POST CLIENTES:", error);
+        res.status(500).send(error.message);
     }
 });
 
@@ -109,8 +113,8 @@ app.post('/clientes/:id/productos', (req, res) => {
         res.sendStatus(200);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+        console.error("ERROR AGREGAR PRODUCTOS:", error);
+        res.status(500).send(error.message);
     }
 });
 
@@ -123,13 +127,13 @@ app.post('/pago/:id', (req, res) => {
 
         db.prepare(
             `INSERT INTO pagos (cliente_id, monto, fecha) VALUES (?, ?, ?)`
-        ).run(clienteId, monto, new Date());
+        ).run(clienteId, monto, new Date().toISOString());
 
         res.sendStatus(200);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+        console.error("ERROR PAGO:", error);
+        res.status(500).send(error.message);
     }
 });
 
@@ -146,8 +150,8 @@ app.delete('/clientes/:id', (req, res) => {
         res.sendStatus(200);
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+        console.error("ERROR DELETE:", error);
+        res.status(500).send(error.message);
     }
 });
 
@@ -160,7 +164,7 @@ app.get('/', (req, res) => {
 });
 
 //////////////////////////////
-// 🚀 SERVIDOR
+// 🚀 SERVIDOR (IMPORTANTE PARA RENDER)
 //////////////////////////////
 
 const PORT = process.env.PORT || 3000;
