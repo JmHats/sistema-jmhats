@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Productos</title>
+    <link rel="stylesheet" href="/pagos/style.css">
+</head>
+<body>
+
+<h1>Agregar Productos</h1>
+
+<div class="container">
+
+    <h3 id="nombreCliente"></h3>
+
+    <br>
+
+    <div style="display: flex; gap: 10px;">
+        <input id="producto1" placeholder="Producto 1" style="flex: 2;">
+        <input id="precio1" placeholder="Precio" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <input id="producto2" placeholder="Producto 2" style="flex: 2;">
+        <input id="precio2" placeholder="Precio" style="flex: 1;">
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <input id="producto3" placeholder="Producto 3" style="flex: 2;">
+        <input id="precio3" placeholder="Precio" style="flex: 1;">
+    </div>
+
+    <br>
+
+    <button onclick="guardar()">Guardar</button>
+    <button onclick="volver()">Volver</button>
+
+</div>
+
+<!-- ✅ RUTA CORRECTA -->
+<script src="/pagos/agregar.js"></script>
+
+</body>
+</html>

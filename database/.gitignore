@@ -1,0 +1,3 @@
+node_modules/
+.env
+database/*.dbgit rm -r --cached node_modules
