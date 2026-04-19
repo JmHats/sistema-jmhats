@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Servicio Almidonado</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.row label {
+    width: 80px;
+}
+
+input {
+    flex: 1;
+    padding: 5px;
+}
+
+h3 {
+    margin-top: 15px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+    <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
+    <a href="/servicios/index.html" style="color:white; margin: 10px;"> Servicio Texanas</a>
+    <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
+</nav>
+
+<h1 style="text-align:center;">SERVICIO ALMIDONADO</h1>
+
+<div class="container">
+
+    <div class="row">
+        <label>Nombre:</label>
+        <input id="nombre">
+    </div>
+
+    <div class="row">
+        <label>Tel:</label>
+        <input id="numero">
+    </div>
+
+    <!-- PANTALONES -->
+    <div id="pantalones"></div>
+
+    <h2>Total: $<span id="total">0</span></h2>
+
+    <button onclick="calcularTotal()">Calcular Total</button>
+    <button onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
+    <button onclick="limpiarFormulario()">🧹 Limpiar</button>
+
+</div>
+
+<script src="/almidonado/almidonado.js"></script>
+
+</body>
+</html>

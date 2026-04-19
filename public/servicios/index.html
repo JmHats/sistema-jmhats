@@ -51,6 +51,7 @@ button {
 <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
     <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
     <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicios Texanas</a>
+    <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
 </nav>
 
 <h1 style="text-align:center;">SERVICIOS TEXANAS</h1>
@@ -116,8 +117,13 @@ button {
 
     <h2>Total: $<span id="total">0</span></h2>
 
-    <button onclick="calcularTotal()">Calcular Total</button>
-    <button onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
+    <h2>Total: $<span id="total">0</span></h2>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        <button onclick="calcularTotal()">Calcular Total</button>
+        <button onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
+        <button onclick="limpiarFormulario()">🧹 Limpiar</button>
+    </div>
 
 </div>
 

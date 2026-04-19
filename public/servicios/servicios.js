@@ -9,7 +9,28 @@ function calcularTotal() {
     document.getElementById('total').innerText = total;
 }
 
-// 🔥 IMPRIMIR TICKET PERFECTO
+
+// 🧹 LIMPIAR FORMULARIO
+function limpiarFormulario() {
+
+    document.getElementById('nombre').value = '';
+    document.getElementById('numero').value = '';
+
+    document.getElementById('texana1').value = '';
+    document.getElementById('texana2').value = '';
+    document.getElementById('texana3').value = '';
+
+    document.getElementById('horma1').value = '';
+    document.getElementById('horma2').value = '';
+    document.getElementById('horma3').value = '';
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+
+    document.getElementById('total').innerText = '0';
+}
+
+
+// 🖨️ IMPRIMIR TICKET
 function imprimirTicket() {
 
     const nombre = document.getElementById('nombre').value;
