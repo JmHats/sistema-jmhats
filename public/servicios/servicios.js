@@ -1,10 +1,51 @@
 function calcularTotal() {
     let total = 0;
 
-    document.querySelectorAll('input[type="checkbox"]:checked')
+    // ✅ SOLO SUMAR LOS QUE TIENEN VALUE (servicios normales)
+    document.querySelectorAll('input[type="checkbox"][value]:checked')
     .forEach(el => {
         total += parseFloat(el.value);
     });
+
+    // ✅ HERRAJES
+    const h1 = document.getElementById('herraje1_check');
+    const h2 = document.getElementById('herraje2_check');
+    const h3 = document.getElementById('herraje3_check');
+
+    if (h1 && h1.checked) {
+        let letras = parseInt(document.getElementById('herraje1').value) || 0;
+        total += letras * 30;
+    }
+
+    if (h2 && h2.checked) {
+        let letras = parseInt(document.getElementById('herraje2').value) || 0;
+        total += letras * 30;
+    }
+
+    if (h3 && h3.checked) {
+        let letras = parseInt(document.getElementById('herraje3').value) || 0;
+        total += letras * 30;
+    }
+
+    // ✅ EXTRAS
+    const e1 = document.getElementById('extra1_check');
+    const e2 = document.getElementById('extra2_check');
+    const e3 = document.getElementById('extra3_check');
+
+    if (e1 && e1.checked) {
+        let precio = parseFloat(document.getElementById('extra1_precio').value) || 0;
+        total += precio;
+    }
+
+    if (e2 && e2.checked) {
+        let precio = parseFloat(document.getElementById('extra2_precio').value) || 0;
+        total += precio;
+    }
+
+    if (e3 && e3.checked) {
+        let precio = parseFloat(document.getElementById('extra3_precio').value) || 0;
+        total += precio;
+    }
 
     document.getElementById('total').innerText = total;
 }
@@ -24,6 +65,29 @@ function limpiarFormulario() {
     document.getElementById('horma2').value = '';
     document.getElementById('horma3').value = '';
 
+    // HERRAJES
+    document.getElementById('herraje1').value = '';
+    document.getElementById('herraje2').value = '';
+    document.getElementById('herraje3').value = '';
+
+    document.getElementById('herraje1_check').checked = false;
+    document.getElementById('herraje2_check').checked = false;
+    document.getElementById('herraje3_check').checked = false;
+
+    // EXTRAS
+    document.getElementById('extra1_nombre').value = '';
+    document.getElementById('extra2_nombre').value = '';
+    document.getElementById('extra3_nombre').value = '';
+
+    document.getElementById('extra1_precio').value = '';
+    document.getElementById('extra2_precio').value = '';
+    document.getElementById('extra3_precio').value = '';
+
+    document.getElementById('extra1_check').checked = false;
+    document.getElementById('extra2_check').checked = false;
+    document.getElementById('extra3_check').checked = false;
+
+    // CHECKBOXES
     document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
 
     document.getElementById('total').innerText = '0';
@@ -39,18 +103,38 @@ function imprimirTicket() {
 
     const texanas = [];
 
-    function obtenerServicios(clase) {
+    function obtenerServicios(clase, num) {
         let servicios = [];
+
+        // servicios normales
         document.querySelectorAll(`.${clase}:checked`).forEach(el => {
             servicios.push(el.parentElement.innerText.trim());
         });
+
+        // herraje
+        const herrajeCheck = document.getElementById(`herraje${num}_check`);
+        const letras = document.getElementById(`herraje${num}`).value;
+
+        if (herrajeCheck.checked && letras) {
+            servicios.push(`Herraje (${letras} letras)`);
+        }
+
+        // extra
+        const extraCheck = document.getElementById(`extra${num}_check`);
+        const extraNombre = document.getElementById(`extra${num}_nombre`).value;
+        const extraPrecio = document.getElementById(`extra${num}_precio`).value;
+
+        if (extraCheck.checked && extraNombre) {
+            servicios.push(`${extraNombre} $${extraPrecio}`);
+        }
+
         return servicios;
     }
 
     function agregarTexana(num, tex, horma, clase) {
         const modelo = document.getElementById(tex).value;
         const h = document.getElementById(horma).value;
-        const servicios = obtenerServicios(clase);
+        const servicios = obtenerServicios(clase, num);
 
         if (modelo || h || servicios.length) {
             texanas.push({ num, modelo, h, servicios });

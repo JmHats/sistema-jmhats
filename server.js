@@ -172,3 +172,56 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
 });
+
+const multer = require('multer');
+
+// CONFIG IMÁGENES
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage });
+
+//////////////////////////////
+// INVENTARIO
+//////////////////////////////
+
+app.get('/inventario', (req, res) => {
+    const data = db.prepare('SELECT * FROM inventario ORDER BY id DESC').all();
+    res.json(data);
+});
+
+app.post('/inventario', upload.single('imagen'), (req, res) => {
+
+    const {
+        codigo, nombre, talla, marca, color,
+        categoria, subcategoria,
+        mercadoLibre, pagina, tiktok
+    } = req.body;
+
+    db.prepare(`
+        INSERT INTO inventario
+        (codigo, nombre, talla, marca, color, categoria, subcategoria, mercadoLibre, pagina, tiktok, imagen, fecha)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+        codigo,
+        nombre,
+        talla,
+        marca,
+        color,
+        categoria,
+        subcategoria,
+        mercadoLibre ? 1 : 0,
+        pagina ? 1 : 0,
+        tiktok ? 1 : 0,
+        req.file ? '/uploads/' + req.file.filename : '',
+        new Date().toISOString()
+    );
+
+    res.sendStatus(200);
+});

@@ -34,4 +34,22 @@ CREATE TABLE IF NOT EXISTS pagos (
 )
 `).run();
 
+db.prepare(`
+CREATE TABLE IF NOT EXISTS inventario (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT,
+    nombre TEXT,
+    talla TEXT,
+    marca TEXT,
+    color TEXT,
+    categoria TEXT,
+    subcategoria TEXT,
+    mercadoLibre INTEGER,
+    pagina INTEGER,
+    tiktok INTEGER,
+    imagen TEXT,
+    fecha TEXT
+)
+`).run();
+
 module.exports = db;
