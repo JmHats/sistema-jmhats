@@ -1,205 +1,121 @@
 function calcularTotal() {
     let total = 0;
 
-    // ✅ SOLO SUMAR LOS QUE TIENEN VALUE (servicios normales)
     document.querySelectorAll('input[type="checkbox"][value]:checked')
-    .forEach(el => {
-        total += parseFloat(el.value);
-    });
+    .forEach(el => total += parseFloat(el.value));
 
-    // ✅ HERRAJES
-    const h1 = document.getElementById('herraje1_check');
-    const h2 = document.getElementById('herraje2_check');
-    const h3 = document.getElementById('herraje3_check');
+    // HERRAJES
+    for (let i = 1; i <= 3; i++) {
+        const check = document.getElementById(`herraje${i}_check`);
+        const letras = document.getElementById(`herraje${i}`);
 
-    if (h1 && h1.checked) {
-        let letras = parseInt(document.getElementById('herraje1').value) || 0;
-        total += letras * 30;
+        if (check && check.checked) {
+            total += (parseInt(letras.value) || 0) * 30;
+        }
     }
 
-    if (h2 && h2.checked) {
-        let letras = parseInt(document.getElementById('herraje2').value) || 0;
-        total += letras * 30;
-    }
+    // EXTRAS
+    for (let i = 1; i <= 3; i++) {
+        const check = document.getElementById(`extra${i}_check`);
+        const precio = document.getElementById(`extra${i}_precio`);
 
-    if (h3 && h3.checked) {
-        let letras = parseInt(document.getElementById('herraje3').value) || 0;
-        total += letras * 30;
-    }
-
-    // ✅ EXTRAS
-    const e1 = document.getElementById('extra1_check');
-    const e2 = document.getElementById('extra2_check');
-    const e3 = document.getElementById('extra3_check');
-
-    if (e1 && e1.checked) {
-        let precio = parseFloat(document.getElementById('extra1_precio').value) || 0;
-        total += precio;
-    }
-
-    if (e2 && e2.checked) {
-        let precio = parseFloat(document.getElementById('extra2_precio').value) || 0;
-        total += precio;
-    }
-
-    if (e3 && e3.checked) {
-        let precio = parseFloat(document.getElementById('extra3_precio').value) || 0;
-        total += precio;
+        if (check && check.checked) {
+            total += parseFloat(precio.value) || 0;
+        }
     }
 
     document.getElementById('total').innerText = total;
 }
 
-
-// 🧹 LIMPIAR FORMULARIO
 function limpiarFormulario() {
-
-    document.getElementById('nombre').value = '';
-    document.getElementById('numero').value = '';
-
-    document.getElementById('texana1').value = '';
-    document.getElementById('texana2').value = '';
-    document.getElementById('texana3').value = '';
-
-    document.getElementById('horma1').value = '';
-    document.getElementById('horma2').value = '';
-    document.getElementById('horma3').value = '';
-
-    // HERRAJES
-    document.getElementById('herraje1').value = '';
-    document.getElementById('herraje2').value = '';
-    document.getElementById('herraje3').value = '';
-
-    document.getElementById('herraje1_check').checked = false;
-    document.getElementById('herraje2_check').checked = false;
-    document.getElementById('herraje3_check').checked = false;
-
-    // EXTRAS
-    document.getElementById('extra1_nombre').value = '';
-    document.getElementById('extra2_nombre').value = '';
-    document.getElementById('extra3_nombre').value = '';
-
-    document.getElementById('extra1_precio').value = '';
-    document.getElementById('extra2_precio').value = '';
-    document.getElementById('extra3_precio').value = '';
-
-    document.getElementById('extra1_check').checked = false;
-    document.getElementById('extra2_check').checked = false;
-    document.getElementById('extra3_check').checked = false;
-
-    // CHECKBOXES
-    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    document.querySelectorAll('input').forEach(i => {
+        if (i.type === 'checkbox') i.checked = false;
+        else i.value = '';
+    });
 
     document.getElementById('total').innerText = '0';
 }
 
-
-// 🖨️ IMPRIMIR TICKET
 function imprimirTicket() {
 
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('numero').value;
     const total = document.getElementById('total').innerText;
 
-    const texanas = [];
-
-    function obtenerServicios(clase, num) {
-        let servicios = [];
-
-        // servicios normales
-        document.querySelectorAll(`.${clase}:checked`).forEach(el => {
-            servicios.push(el.parentElement.innerText.trim());
-        });
-
-        // herraje
-        const herrajeCheck = document.getElementById(`herraje${num}_check`);
-        const letras = document.getElementById(`herraje${num}`).value;
-
-        if (herrajeCheck.checked && letras) {
-            servicios.push(`Herraje (${letras} letras)`);
-        }
-
-        // extra
-        const extraCheck = document.getElementById(`extra${num}_check`);
-        const extraNombre = document.getElementById(`extra${num}_nombre`).value;
-        const extraPrecio = document.getElementById(`extra${num}_precio`).value;
-
-        if (extraCheck.checked && extraNombre) {
-            servicios.push(`${extraNombre} $${extraPrecio}`);
-        }
-
-        return servicios;
-    }
-
-    function agregarTexana(num, tex, horma, clase) {
-        const modelo = document.getElementById(tex).value;
-        const h = document.getElementById(horma).value;
-        const servicios = obtenerServicios(clase, num);
-
-        if (modelo || h || servicios.length) {
-            texanas.push({ num, modelo, h, servicios });
-        }
-    }
-
-    agregarTexana(1, 'texana1', 'horma1', 'servicio1');
-    agregarTexana(2, 'texana2', 'horma2', 'servicio2');
-    agregarTexana(3, 'texana3', 'horma3', 'servicio3');
-
     function generar(tipo) {
 
-        let txt = '';
-        const linea = '--------------------------------';
+        let contenido = `
+        JM HATS
+${tipo}
+--------------------------
+Cliente: ${nombre}
+Tel: ${telefono}
+--------------------------
+`;
 
-        txt += '       JM HATS\n';
-        txt += `     ${tipo}\n\n`;
+        for (let i = 1; i <= 3; i++) {
 
-        txt += `Cliente:\n${nombre}\n`;
-        txt += `Tel: ${telefono}\n`;
-        txt += linea + '\n';
+            const modelo = document.getElementById(`texana${i}`).value;
+            const horma = document.getElementById(`horma${i}`).value;
 
-        texanas.forEach(t => {
+            let servicios = [];
 
-            txt += `\nTexana ${t.num}\n`;
+            document.querySelectorAll(`.servicio${i}:checked`)
+            .forEach(el => servicios.push(el.parentElement.innerText));
 
-            if (t.modelo)
-                txt += `Mod: ${t.modelo.substring(0,20)}\n`;
+            const herrajeCheck = document.getElementById(`herraje${i}_check`);
+            const letras = document.getElementById(`herraje${i}`).value;
 
-            if (t.h)
-                txt += `Hor: ${t.h.substring(0,20)}\n`;
+            if (herrajeCheck && herrajeCheck.checked && letras) {
+                servicios.push(`Herraje (${letras} letras)`);
+            }
 
-            t.servicios.forEach(s => {
-                txt += `- ${s.substring(0,25)}\n`;
-            });
+            const extraCheck = document.getElementById(`extra${i}_check`);
+            const extraNom = document.getElementById(`extra${i}_nombre`).value;
+            const extraPrecio = document.getElementById(`extra${i}_precio`).value;
 
-        });
+            if (extraCheck && extraCheck.checked && extraNom) {
+                servicios.push(`${extraNom} $${extraPrecio}`);
+            }
 
-        txt += '\n' + linea + '\n';
-        txt += `TOTAL: $${total}\n\n`;
-        txt += 'Gracias por su\n';
-        txt += 'compra\n';
+            if (modelo || horma || servicios.length) {
+                contenido += `\nTexana ${i}\n`;
+                if (modelo) contenido += `Mod: ${modelo}\n`;
+                if (horma) contenido += `Hor: ${horma}\n`;
 
-        return txt;
+                servicios.forEach(s => contenido += `- ${s}\n`);
+            }
+        }
+
+        contenido += `
+--------------------------
+TOTAL: $${total}
+
+Gracias por su compra
+`;
+
+        return contenido;
     }
 
-    const contenido =
-        generar('COPIA CLIENTE') +
-        '\n\n=============================\n\n' +
-        generar('COPIA NEGOCIO');
+    // 🔥 AQUÍ SE GENERAN LAS 2 COPIAS
+    const contenidoFinal =
+        generar('--- COPIA CLIENTE ---') +
+        '\n\n==========================\n\n' +
+        generar('--- COPIA NEGOCIO ---');
 
     const win = window.open('', '', 'width=300,height=600');
 
     win.document.write(`
-        <pre style="
-            font-size:14px;
-            line-height:1.3;
-            width:220px;
-            margin:0;
-            font-family: monospace;
-        ">
-${contenido}
+        <pre style="font-family: monospace; font-size:14px;">
+${contenidoFinal}
         </pre>
     `);
 
     win.document.close();
-    win.print();
+
+    setTimeout(() => {
+        win.focus();
+        win.print();
+        win.close();
+    }, 500);
 }

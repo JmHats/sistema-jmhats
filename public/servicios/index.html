@@ -7,9 +7,7 @@
 <link rel="stylesheet" href="/css/style.css">
 
 <style>
-body {
-    font-family: Arial;
-}
+body { font-family: Arial; }
 
 .container {
     max-width: 500px;
@@ -25,21 +23,14 @@ body {
     margin-bottom: 10px;
 }
 
-.row label {
-    width: 80px;
-}
+.row label { width: 80px; }
 
-input {
-    flex: 1;
-    padding: 5px;
-}
+input { flex: 1; padding: 5px; }
 
-h3 {
-    margin-top: 20px;
-}
+h3 { margin-top: 20px; }
 
 button {
-    margin-top: 15px;
+    margin-top: 10px;
     padding: 10px;
     width: 100%;
 }
@@ -51,94 +42,79 @@ button {
 <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
     <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
     <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
-    <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
-    <a href="/productos/index.html" style="color:white; margin: 10px;">Productos</a>
 </nav>
 
 <h1 style="text-align:center;">SERVICIOS TEXANAS</h1>
 
 <div class="container">
 
-    <div class="row">
-        <label>Nombre:</label>
-        <input id="nombre">
-    </div>
+<div class="row">
+    <label>Nombre:</label>
+    <input id="nombre">
+</div>
 
-    <div class="row">
-        <label>Tel:</label>
-        <input id="numero">
-    </div>
+<div class="row">
+    <label>Tel:</label>
+    <input id="numero">
+</div>
 
-    <!-- TEXANA 1 -->
-    <h3>Texana 1</h3>
-    <input id="texana1" placeholder="Modelo">
-    <input id="horma1" placeholder="Horma">
+<!-- ===== TEXANA 1 ===== -->
+<h3>Texana 1</h3>
+<input id="texana1" placeholder="Modelo">
+<input id="horma1" placeholder="Horma">
 
-    <div>
-        <label><input type="checkbox" value="200" class="servicio1"> Limpieza</label><br>
-        <label><input type="checkbox" value="150" class="servicio1"> Horma</label><br>
-        <label><input type="checkbox" value="350" class="servicio1"> Limpieza y Horma</label><br>
-        <label><input type="checkbox" value="80" class="servicio1"> Corte</label><br>
-        <label><input type="checkbox" value="200" class="servicio1"> Goma</label><br>
-        <label><input type="checkbox" value="50" class="servicio1"> Esponja</label><br>
-        <label><input type="checkbox" value="80" class="servicio1"> Agrandar</label><br>
+<div>
+<label><input type="checkbox" value="200" class="servicio1"> Limpieza</label><br>
+<label><input type="checkbox" value="150" class="servicio1"> Horma</label><br>
+<label><input type="checkbox" value="350" class="servicio1"> Limpieza y Horma</label><br>
 
-        <label><input type="checkbox" id="herraje1_check"> Herraje x letra</label> <br>
-        <input type="number" id="herraje1" placeholder="Número de letras" min="0"> <br>
-        <label><input type="checkbox" id="extra1_check"> Servicio extra</label><br>
-        <input type="text" id="extra1_nombre" placeholder="Nombre del servicio">
-        <input type="number" id="extra1_precio" placeholder="Precio">
-    </div>
+<label><input type="checkbox" id="herraje1_check"> Herraje</label>
+<input type="number" id="herraje1" placeholder="Letras"><br>
 
-    <!-- TEXANA 2 -->
-    <h3>Texana 2</h3>
-    <input id="texana2" placeholder="Modelo">
-    <input id="horma2" placeholder="Horma">
+<label><input type="checkbox" id="extra1_check"> Extra</label>
+<input type="text" id="extra1_nombre" placeholder="Nombre">
+<input type="number" id="extra1_precio" placeholder="Precio">
+</div>
 
-    <div>
-        <label><input type="checkbox" value="200" class="servicio2"> Limpieza</label><br>
-        <label><input type="checkbox" value="150" class="servicio2"> Horma</label><br>
-        <label><input type="checkbox" value="350" class="servicio2"> Limpieza y Horma</label><br>
-        <label><input type="checkbox" value="80" class="servicio2"> Corte</label><br>
-        <label><input type="checkbox" value="200" class="servicio2"> Goma</label><br>
-        <label><input type="checkbox" value="50" class="servicio2"> Esponja</label><br>
-        <label><input type="checkbox" value="80" class="servicio2"> Agrandar</label><br>
+<!-- ===== TEXANA 2 ===== -->
+<h3>Texana 2</h3>
+<input id="texana2" placeholder="Modelo">
+<input id="horma2" placeholder="Horma">
 
-        <label><input type="checkbox" id="herraje1_check"> Herraje x letra</label> <br>
-        <input type="number" id="herraje1" placeholder="Número de letras" min="0"> <br>
-        <label><input type="checkbox" id="extra1_check"> Servicio extra</label><br>
-        <input type="text" id="extra1_nombre" placeholder="Nombre del servicio">
-        <input type="number" id="extra1_precio" placeholder="Precio">
-    </div>
+<div>
+<label><input type="checkbox" value="200" class="servicio2"> Limpieza</label><br>
+<label><input type="checkbox" value="150" class="servicio2"> Horma</label><br>
 
-    <!-- TEXANA 3 -->
-    <h3>Texana 3</h3>
-    <input id="texana3" placeholder="Modelo">
-    <input id="horma3" placeholder="Horma">
+<label><input type="checkbox" id="herraje2_check"> Herraje</label>
+<input type="number" id="herraje2" placeholder="Letras"><br>
 
-    <div>
-        <label><input type="checkbox" value="200" class="servicio3"> Limpieza</label><br>
-        <label><input type="checkbox" value="150" class="servicio3"> Horma</label><br>
-        <label><input type="checkbox" value="350" class="servicio3"> Limpieza y Horma</label><br>
-        <label><input type="checkbox" value="80" class="servicio3"> Corte</label><br>
-        <label><input type="checkbox" value="200" class="servicio3"> Goma</label><br>
-        <label><input type="checkbox" value="50" class="servicio3"> Esponja</label><br>
-        <label><input type="checkbox" value="80" class="servicio3"> Agrandar</label><br>
+<label><input type="checkbox" id="extra2_check"> Extra</label>
+<input type="text" id="extra2_nombre">
+<input type="number" id="extra2_precio">
+</div>
 
-        <label><input type="checkbox" id="herraje1_check"> Herraje x letra</label> <br>
-        <input type="number" id="herraje1" placeholder="Número de letras" min="0"> <br>
-        <label><input type="checkbox" id="extra1_check"> Servicio extra</label><br>
-        <input type="text" id="extra1_nombre" placeholder="Nombre del servicio">
-        <input type="number" id="extra1_precio" placeholder="Precio">
-    </div>
+<!-- ===== TEXANA 3 ===== -->
+<h3>Texana 3</h3>
+<input id="texana3" placeholder="Modelo">
+<input id="horma3" placeholder="Horma">
 
-    <h2>Total: $<span id="total">0</span></h2>
+<div>
+<label><input type="checkbox" value="200" class="servicio3"> Limpieza</label><br>
+<label><input type="checkbox" value="150" class="servicio3"> Horma</label><br>
 
-    <div style="display:flex; flex-direction:column; gap:10px;">
-        <button onclick="calcularTotal()">Calcular Total</button>
-        <button onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
-        <button onclick="limpiarFormulario()">🧹 Limpiar</button>
-    </div>
+<label><input type="checkbox" id="herraje3_check"> Herraje</label>
+<input type="number" id="herraje3"><br>
+
+<label><input type="checkbox" id="extra3_check"> Extra</label>
+<input type="text" id="extra3_nombre">
+<input type="number" id="extra3_precio">
+</div>
+
+<h2>Total: $<span id="total">0</span></h2>
+
+<button onclick="calcularTotal()">Calcular</button>
+<button onclick="imprimirTicket()">🧾 Imprimir</button>
+<button onclick="limpiarFormulario()">Limpiar</button>
 
 </div>
 
