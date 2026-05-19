@@ -1,124 +1,302 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<title>Servicios</title>
 
-<link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
 
-<style>
-body { font-family: Arial; }
+    <title>Servicios</title>
 
-.container {
-    max-width: 500px;
-    margin: auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-}
+    <link rel="stylesheet" href="/css/style.css">
 
-.row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
+    <style>
 
-.row label { width: 80px; }
+        body{
+            font-family: Arial;
+        }
 
-input { flex: 1; padding: 5px; }
+        .container{
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
 
-h3 { margin-top: 20px; }
+        .row{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
-button {
-    margin-top: 10px;
-    padding: 10px;
-    width: 100%;
-}
-</style>
+        .row label{
+            width: 80px;
+        }
+
+        input{
+            flex: 1;
+            padding: 5px;
+        }
+
+        h3{
+            margin-top: 20px;
+        }
+
+        button{
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
-<nav style="background:#8b5e3c; padding: 15px; text-align: center;">
-    <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
-    <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
-</nav>
+    <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
 
-<h1 style="text-align:center;">SERVICIOS TEXANAS</h1>
+        <a href="/pagos/index.html" style="color:white; margin: 10px;">
+            Pagos
+        </a>
 
-<div class="container">
+        <a href="/servicios/index.html" style="color:white; margin: 10px;">
+            Servicio Texanas
+        </a>
 
-<div class="row">
-    <label>Nombre:</label>
-    <input id="nombre">
-</div>
+        <a href="/almidonado/index.html" style="color:white; margin: 10px;">
+            Servicio Almidonado
+        </a>
 
-<div class="row">
-    <label>Tel:</label>
-    <input id="numero">
-</div>
+        <a href="/productos/index.html" style="color:white; margin: 10px;">
+            Productos
+        </a>
 
-<!-- ===== TEXANA 1 ===== -->
-<h3>Texana 1</h3>
-<input id="texana1" placeholder="Modelo">
-<input id="horma1" placeholder="Horma">
+        <a href="/variantes/index.html" style="color:white; margin: 10px;">
+            Variantes
+        </a>
+        <a href="/sucursales/index.html" style="color:white; margin: 10px;">
+            Sucursales
+        </a>
+        <a href="/plataformas/index.html" style="color:white; margin: 10px;">
+            Plataformas
+        </a>
+        <a href="/inventario/index.html" style="color:white; margin: 10px;">
+            Inventario
+        </a>
+        <a href="/catalogo/index.html" style="color:white; margin: 10px;">
+            Catalogo
+        </a>
+    </nav>
 
-<div>
-<label><input type="checkbox" value="200" class="servicio1"> Limpieza</label><br>
-<label><input type="checkbox" value="150" class="servicio1"> Horma</label><br>
-<label><input type="checkbox" value="350" class="servicio1"> Limpieza y Horma</label><br>
+    <div style="position: relative;">
 
-<label><input type="checkbox" id="herraje1_check"> Herraje</label>
-<input type="number" id="herraje1" placeholder="Letras"><br>
+        <h1 style="text-align:center;">
+            SERVICIO DE TEXANAS
+        </h1>
 
-<label><input type="checkbox" id="extra1_check"> Extra</label>
-<input type="text" id="extra1_nombre" placeholder="Nombre">
-<input type="number" id="extra1_precio" placeholder="Precio">
-</div>
+        <!-- LOGO ARRIBA DERECHA -->
+        <img
+            src="/img/Logo.png"
+            alt="Logo"
+            style="position:fixed; top:-100px; right:60px; width:300px; z-index:1000;"
+        >
 
-<!-- ===== TEXANA 2 ===== -->
-<h3>Texana 2</h3>
-<input id="texana2" placeholder="Modelo">
-<input id="horma2" placeholder="Horma">
+    </div>
 
-<div>
-<label><input type="checkbox" value="200" class="servicio2"> Limpieza</label><br>
-<label><input type="checkbox" value="150" class="servicio2"> Horma</label><br>
+    <div class="container">
 
-<label><input type="checkbox" id="herraje2_check"> Herraje</label>
-<input type="number" id="herraje2" placeholder="Letras"><br>
+        <div class="row">
 
-<label><input type="checkbox" id="extra2_check"> Extra</label>
-<input type="text" id="extra2_nombre">
-<input type="number" id="extra2_precio">
-</div>
+            <label>
+                Nombre:
+            </label>
 
-<!-- ===== TEXANA 3 ===== -->
-<h3>Texana 3</h3>
-<input id="texana3" placeholder="Modelo">
-<input id="horma3" placeholder="Horma">
+            <input id="nombre">
 
-<div>
-<label><input type="checkbox" value="200" class="servicio3"> Limpieza</label><br>
-<label><input type="checkbox" value="150" class="servicio3"> Horma</label><br>
+        </div>
 
-<label><input type="checkbox" id="herraje3_check"> Herraje</label>
-<input type="number" id="herraje3"><br>
+        <div class="row">
 
-<label><input type="checkbox" id="extra3_check"> Extra</label>
-<input type="text" id="extra3_nombre">
-<input type="number" id="extra3_precio">
-</div>
+            <label>
+                Tel:
+            </label>
 
-<h2>Total: $<span id="total">0</span></h2>
+            <input id="numero">
 
-<button onclick="calcularTotal()">Calcular</button>
-<button onclick="imprimirTicket()">🧾 Imprimir</button>
-<button onclick="limpiarFormulario()">Limpiar</button>
+        </div>
 
-</div>
+        <!-- ===== TEXANA 1 ===== -->
+        <h3>Texana 1</h3>
 
-<script src="/servicios/servicios.js"></script>
+        <input id="texana1" placeholder="Modelo">
+
+        <input id="horma1" placeholder="Horma">
+
+        <div>
+
+            <label>
+                <input type="checkbox" value="200" class="servicio1">
+                Limpieza
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="150" class="servicio1">
+                Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="250" class="servicio1">
+                Limpieza y Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="herraje1_check">
+                Herraje
+            </label>
+
+            <input type="number" id="herraje1" placeholder="Letras">
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="extra1_check">
+                Extra
+            </label>
+
+            <input type="text" id="extra1_nombre" placeholder="Nombre">
+
+            <input type="number" id="extra1_precio" placeholder="Precio">
+
+        </div>
+
+        <!-- ===== TEXANA 2 ===== -->
+        <h3>Texana 2</h3>
+
+        <input id="texana2" placeholder="Modelo">
+
+        <input id="horma2" placeholder="Horma">
+
+        <div>
+
+            <label>
+                <input type="checkbox" value="200" class="servicio2">
+                Limpieza
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="150" class="servicio2">
+                Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="250" class="servicio2">
+                Limpieza y Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="herraje2_check">
+                Herraje
+            </label>
+
+            <input type="number" id="herraje2" placeholder="Letras">
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="extra2_check">
+                Extra
+            </label>
+
+            <input type="text" id="extra2_nombre">
+
+            <input type="number" id="extra2_precio">
+
+        </div>
+
+        <!-- ===== TEXANA 3 ===== -->
+        <h3>Texana 3</h3>
+
+        <input id="texana3" placeholder="Modelo">
+
+        <input id="horma3" placeholder="Horma">
+
+        <div>
+
+            <label>
+                <input type="checkbox" value="200" class="servicio3">
+                Limpieza
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="150" class="servicio3">
+                Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" value="250" class="servicio3">
+                Limpieza y Horma
+            </label>
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="herraje3_check">
+                Herraje
+            </label>
+
+            <input type="number" id="herraje3">
+
+            <br>
+
+            <label>
+                <input type="checkbox" id="extra3_check">
+                Extra
+            </label>
+
+            <input type="text" id="extra3_nombre">
+
+            <input type="number" id="extra3_precio">
+
+        </div>
+
+        <h2>
+            Total: $
+            <span id="total">0</span>
+        </h2>
+
+        <button onclick="calcularTotal()">
+            Calcular
+        </button>
+
+        <button onclick="imprimirTicket()">
+            🧾 Imprimir
+        </button>
+
+        <button onclick="limpiarFormulario()">
+            Limpiar
+        </button>
+
+    </div>
+
+    <script src="/servicios/servicios.js"></script>
 
 </body>
+
 </html>

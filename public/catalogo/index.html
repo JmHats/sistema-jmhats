@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Catálogo</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* 🔍 BUSCADORES */
+        .buscador-container{
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .buscador {
+            width: 250px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .btn-buscar{
+            padding: 10px 15px;
+            background: #8b5e3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-buscar:hover{
+            background: #6e472d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #8b5e3c;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        img {
+            width: 70px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-contenido {
+            max-width: 98vw;
+            max-height: 98vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+        }
+
+        .cerrar {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 45px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+    <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
+    <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
+    <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
+    <a href="/productos/index.html" style="color:white; margin: 10px;">Productos</a>
+    <a href="/variantes/index.html" style="color:white; margin: 10px;">Variantes</a>
+    <a href="/sucursales/index.html" style="color:white; margin: 10px;">Sucursales</a>
+    <a href="/plataformas/index.html" style="color:white; margin: 10px;">Plataformas</a>
+    <a href="/inventario/index.html" style="color:white; margin: 10px;">Inventario</a>
+    <a href="#" style="color:white; margin: 10px;">Catálogo</a>
+</nav>
+
+<h1>Catálogo de Inventario</h1>
+
+<!-- 🔍 BUSCADORES -->
+<div class="buscador-container">
+
+    <input 
+        type="text" 
+        id="buscadorNombre" 
+        class="buscador" 
+        placeholder="Buscar por nombre..."
+    >
+
+    <input 
+        type="text" 
+        id="buscadorCategoria" 
+        class="buscador" 
+        placeholder="Buscar por categoría..."
+    >
+
+    <button class="btn-buscar" onclick="buscar()">
+        Buscar
+    </button>
+
+</div>
+
+<table>
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imagen</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Variante</th>
+            <th>Sucursal</th>
+            <th>Stock</th>
+            <th>Plataformas</th>
+        </tr>
+    </thead>
+
+    <tbody id="listaCatalogo"></tbody>
+
+</table>
+
+<!-- MODAL -->
+<div id="modalImagen" class="modal">
+    <span class="cerrar" id="cerrarModal">&times;</span>
+    <img class="modal-contenido" id="imagenGrande">
+</div>
+
+<script>
+
+let datosGlobales = [];
+
+// CARGAR CATÁLOGO
+async function cargarCatalogo() {
+
+    try {
+
+        const res = await fetch('/api/inventario');
+        const data = await res.json();
+
+        console.log(data);
+
+        datosGlobales = data;
+
+        mostrarDatos(data);
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+// MOSTRAR DATOS
+function mostrarDatos(data) {
+
+    const lista =
+        document.getElementById('listaCatalogo');
+
+    lista.innerHTML = '';
+
+    data.forEach(item => {
+
+        let plataformas = [];
+
+        if (item.mercado_libre == 1) {
+            plataformas.push('Mercado Libre');
+        }
+
+        if (item.tiktok == 1) {
+            plataformas.push('TikTok');
+        }
+
+        if (item.web == 1) {
+            plataformas.push('Web');
+        }
+
+        const tr =
+            document.createElement('tr');
+
+        tr.innerHTML = `
+
+            <td>${item.id_inventario}</td>
+
+            <td>
+                <img 
+                    src="/uploads/${item.imagen}" 
+                    class="img-producto"
+                >
+            </td>
+
+            <td>${item.nombre || ''}</td>
+
+            <td>${item.categoria || ''}</td>
+
+            <td>
+                ${item.color || ''} 
+                - 
+                ${item.talla || ''}
+            </td>
+
+            <td>${item.sucursal || ''}</td>
+
+            <td>${item.stock || 0}</td>
+
+            <td>
+                ${plataformas.length
+                    ? plataformas.join(', ')
+                    : 'Sin plataformas'}
+            </td>
+
+        `;
+
+        lista.appendChild(tr);
+
+    });
+
+    // CLICK IMAGEN
+    document.querySelectorAll('.img-producto')
+    .forEach(img => {
+
+        img.addEventListener('click', function () {
+
+            abrirImagen(this.src);
+
+        });
+
+    });
+
+}
+
+// 🔍 BUSCAR
+function buscar() {
+
+    const nombre =
+        document.getElementById('buscadorNombre')
+        .value
+        .trim()
+        .toLowerCase();
+
+    const categoria =
+        document.getElementById('buscadorCategoria')
+        .value
+        .trim()
+        .toLowerCase();
+
+    const filtrado =
+        datosGlobales.filter(item => {
+
+            const nombreProducto =
+                (item.nombre || '')
+                .toLowerCase();
+
+            const categoriaProducto =
+                (item.categoria || '')
+                .toLowerCase();
+
+            const coincideNombre =
+                nombreProducto.includes(nombre);
+
+            const coincideCategoria =
+                categoriaProducto.includes(categoria);
+
+            return (
+                coincideNombre &&
+                coincideCategoria
+            );
+
+        });
+
+    mostrarDatos(filtrado);
+
+}
+
+// BUSQUEDA EN TIEMPO REAL
+document
+.getElementById('buscadorNombre')
+.addEventListener('keyup', buscar);
+
+document
+.getElementById('buscadorCategoria')
+.addEventListener('keyup', buscar);
+
+// ABRIR IMAGEN
+function abrirImagen(src) {
+
+    const modal =
+        document.getElementById('modalImagen');
+
+    const imagen =
+        document.getElementById('imagenGrande');
+
+    imagen.src = src;
+
+    modal.style.display = 'flex';
+
+}
+
+// CERRAR
+function cerrarImagen() {
+
+    document.getElementById('modalImagen')
+    .style.display = 'none';
+
+}
+
+// BOTON X
+document
+.getElementById('cerrarModal')
+.addEventListener('click', cerrarImagen);
+
+// CLICK FUERA
+document
+.getElementById('modalImagen')
+.addEventListener('click', function (e) {
+
+    if (e.target === this) {
+
+        cerrarImagen();
+
+    }
+
+});
+
+// INICIO
+window.onload = cargarCatalogo;
+
+</script>
+
+</body>
+</html>

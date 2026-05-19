@@ -1,32 +1,164 @@
-<h2>Agregar Producto</h2>
+<!DOCTYPE html>
+<html lang="es">
 
-<input id="codigo" placeholder="Código">
-<input id="nombre" placeholder="Nombre">
-<input id="talla" placeholder="Talla">
-<input id="marca" placeholder="Marca">
-<input id="color" placeholder="Color">
+<head>
 
-<select id="categoria">
-<option>Mujeres</option>
-<option>Hombres</option>
-<option>Niños</option>
-<option>Sombreros</option>
-</select>
+    <meta charset="UTF-8">
 
-<input id="subcategoria" placeholder="Subcategoría">
+    <title>Sistema Productos</title>
 
-<br>
+    <style>
 
-<label><input type="checkbox" id="ml"> Mercado Libre</label>
-<label><input type="checkbox" id="pagina"> Página</label>
-<label><input type="checkbox" id="tiktok"> TikTok</label>
+        body{
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
 
-<br><br>
+        h1{
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-<input type="file" id="imagen">
+        /* ======================
+           NAV
+        ====================== */
+        nav{
+            background:#8b5e3c;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-<button onclick="guardarProducto()">Guardar</button>
+        nav a{
+            color:white;
+            margin: 10px;
+            text-decoration: none;
+        }
 
-<hr>
+        /* ======================
+           FORMULARIO CENTRADO
+        ====================== */
+        .formulario{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
 
-<div id="lista"></div>
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input{
+            padding: 10px;
+            width: 220px;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: #3d8536;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th{
+            background: #8b5e3c;
+            color: white;
+        }
+
+        th, td{
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        img{
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+
+        <a href="/pagos/index.html">Pagos</a>
+        <a href="/servicios/index.html">Servicio Texanas</a>
+        <a href="/almidonado/index.html">Servicio Almidonado</a>
+        <a href="/productos/index.html">Productos</a>
+        <a href="/variantes/index.html">Variantes</a>
+        <a href="/sucursales/index.html">Sucursales</a>
+        <a href="/plataformas/index.html">Plataformas</a>
+        <a href="/inventario/index.html">Inventario</a>
+        <a href="/catalogo/index.html">Catálogo</a>
+
+    </nav>
+
+    <h1>Productos</h1>
+
+    <!-- FORMULARIO CENTRADO -->
+    <div class="formulario">
+
+        <input id="codigo" placeholder="Código">
+
+        <input id="nombre" placeholder="Nombre">
+
+        <input id="marca" placeholder="Marca">
+
+        <input id="categoria" placeholder="Categoría">
+
+        <input id="genero" placeholder="Género">
+
+        <input id="precio" placeholder="Precio" type="number">
+
+        <input type="file" id="imagen" accept="image/*">
+
+        <button onclick="guardarProducto()">
+            Guardar Producto
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Marca</th>
+                <th>Categoría</th>
+                <th>Género</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th>Acción</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="lista"></tbody>
+
+    </table>
+
+    <script src="/productos/productos.js"></script>
+
+</body>
+
+</html>

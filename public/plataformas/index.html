@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Plataformas</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ======================
+           NAV
+        ====================== */
+        nav{
+            background:#8b5e3c;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a{
+            color:white;
+            margin: 10px;
+            text-decoration: none;
+        }
+
+        /* ======================
+           FORMULARIO CENTRADO
+        ====================== */
+        .formulario{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input{
+            padding: 10px;
+            width: 220px;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: #3d8536;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th{
+            background: #8b5e3c;
+            color: white;
+        }
+
+        th, td{
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        img{
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+
+        <a href="/pagos/index.html" style="color:white; margin: 10px;">
+            Pagos
+        </a>
+
+        <a href="/servicios/index.html" style="color:white; margin: 10px;">
+            Servicio Texanas
+        </a>
+
+        <a href="/almidonado/index.html" style="color:white; margin: 10px;">
+            Servicio Almidonado
+        </a>
+
+        <a href="/productos/index.html" style="color:white; margin: 10px;">
+            Productos
+        </a>
+
+        <a href="/variantes/index.html" style="color:white; margin: 10px;">
+            Variantes
+        </a>
+
+        <a href="/sucursales/index.html" style="color:white; margin: 10px;">
+            Sucursales
+        </a>
+
+        <a href="/plataformas/index.html" style="color:white; margin: 10px;">
+            Plataformas
+        </a>
+
+        <a href="/inventario/index.html" style="color:white; margin: 10px;">
+            Inventario
+        </a>
+
+        <a href="/catalogo/index.html" style="color:white; margin: 10px;">
+            Catalogo
+        </a>
+
+    </nav>
+
+    <h1>Plataformas</h1>
+
+    <div>
+
+        <input id="codigo" placeholder="Código del producto">
+
+        <button onclick="buscar()">
+            Buscar
+        </button>
+
+    </div>
+
+    <div id="form" style="display:none; margin-top:10px;">
+
+        <h3 id="nombre"></h3>
+
+        <img id="imagen">
+
+        <label>
+            <input type="checkbox" id="ml">
+            Mercado Libre
+        </label>
+
+        <br>
+
+        <label>
+            <input type="checkbox" id="tt">
+            TikTok
+        </label>
+
+        <br>
+
+        <label>
+            <input type="checkbox" id="web">
+            Web
+        </label>
+
+        <br><br>
+
+        <button onclick="guardar()">
+            Guardar
+        </button>
+
+    </div>
+
+    <hr>
+
+    <h2>📋 Lista de productos</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Imagen</th>
+                <th>Plataformas</th>
+                <th>Acciones</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tabla"></tbody>
+
+    </table>
+
+    <script>
+
+        let productoId = null;
+
+        // ================= BUSCAR PRODUCTO =================
+        async function buscar(){
+
+            const codigo = document.getElementById('codigo').value;
+
+            const res = await fetch(`/api/producto/codigo/${codigo}`);
+
+            if(!res.ok){
+
+                alert('No encontrado');
+
+                return;
+
+            }
+
+            const p = await res.json();
+
+            productoId = p.id_producto;
+
+            document.getElementById('nombre').innerText = p.nombre;
+
+            document.getElementById('imagen').src = `/uploads/${p.imagen}`;
+
+            document.getElementById('form').style.display = 'block';
+
+        }
+
+        // ================= GUARDAR =================
+        async function guardar(){
+
+            await fetch('/api/plataformas', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type':'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    id_producto: productoId,
+
+                    mercado_libre: document.getElementById('ml').checked ? 1 : 0,
+
+                    tiktok: document.getElementById('tt').checked ? 1 : 0,
+
+                    web: document.getElementById('web').checked ? 1 : 0
+
+                })
+
+            });
+
+            cargarTabla();
+
+            alert('Guardado');
+
+        }
+
+        // ================= CARGAR TABLA =================
+        async function cargarTabla(){
+
+            const res = await fetch('/api/plataformas');
+
+            const data = await res.json();
+
+            const tabla = document.getElementById('tabla');
+
+            tabla.innerHTML = '';
+
+            data.forEach(p => {
+
+                let plataformas = '';
+
+                if(p.mercado_libre){
+                    plataformas += `
+                        <span class="badge">
+                            Mercado Libre
+                        </span>
+                    `;
+                }
+
+                if(p.tiktok){
+                    plataformas += `
+                        <span class="badge">
+                            TikTok
+                        </span>
+                    `;
+                }
+
+                if(p.web){
+                    plataformas += `
+                        <span class="badge">
+                            Web
+                        </span>
+                    `;
+                }
+
+                tabla.innerHTML += `
+                    <tr>
+
+                        <td>${p.codigo}</td>
+
+                        <td>${p.nombre}</td>
+
+                        <td>
+                            <img src="/uploads/${p.imagen}">
+                        </td>
+
+                        <td>
+                            ${plataformas || 'Sin plataformas'}
+                        </td>
+
+                        <td>
+
+                            <button onclick="eliminar(${p.id_producto})">
+                                🗑 Eliminar
+                            </button>
+
+                            <button onclick="editar(
+                                ${p.id_producto},
+                                ${p.mercado_libre || 0},
+                                ${p.tiktok || 0},
+                                ${p.web || 0}
+                            )">
+                                ✏ Editar
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            });
+
+        }
+
+        // ================= ELIMINAR =================
+        async function eliminar(id){
+
+            await fetch(`/api/plataformas/${id}`, {
+                method: 'DELETE'
+            });
+
+            cargarTabla();
+
+        }
+
+        // ================= EDITAR =================
+        function editar(id, ml, tt, web){
+
+            productoId = id;
+
+            document.getElementById('ml').checked = ml;
+
+            document.getElementById('tt').checked = tt;
+
+            document.getElementById('web').checked = web;
+
+            document.getElementById('form').style.display = 'block';
+
+        }
+
+        // init
+        cargarTabla();
+
+    </script>
+
+</body>
+
+</html>

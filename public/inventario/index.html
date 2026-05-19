@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Sistema Inventario</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ======================
+           NAV
+        ====================== */
+        nav{
+            background:#8b5e3c;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a{
+            color:white;
+            margin: 10px;
+            text-decoration: none;
+        }
+
+        /* ======================
+           FORMULARIO CENTRADO
+        ====================== */
+        .formulario{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input{
+            padding: 10px;
+            width: 220px;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: #3d8536;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th{
+            background: #8b5e3c;
+            color: white;
+        }
+
+        th, td{
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        img{
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+
+        <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
+        <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
+        <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
+        <a href="/productos/index.html" style="color:white; margin: 10px;">Productos</a>
+        <a href="/variantes/index.html" style="color:white; margin: 10px;">Variantes</a>
+        <a href="/sucursales/index.html" style="color:white; margin: 10px;">Sucursales</a>
+        <a href="/plataformas/index.html" style="color:white; margin: 10px;">Plataformas</a>
+        <a href="/inventario/index.html" style="color:white; margin: 10px;">Inventario</a>
+        <a href="/catalogo/index.html" style="color:white; margin: 10px;">Catalogo</a>
+
+    </nav>
+
+    <h1>Inventario</h1>
+
+    <div class="formulario">
+
+        <input
+            id="codigoProducto"
+            placeholder="Código del producto"
+            onkeyup="buscarProducto()"
+        >
+
+        <input
+            id="nombreProducto"
+            placeholder="Producto"
+            disabled
+        >
+
+        <input
+            id="idProducto"
+            hidden
+        >
+
+        <input
+            id="idInventario"
+            hidden
+        >
+
+        <div class="preview">
+
+            <img
+                id="imagenProducto"
+                src=""
+                style="display:none;"
+            >
+
+        </div>
+
+        <br><br>
+
+        <select id="variante">
+
+            <option value="">
+                Selecciona Variante
+            </option>
+
+        </select>
+
+        <select id="sucursal">
+
+            <option value="">
+                Selecciona Sucursal
+            </option>
+
+        </select>
+
+        <input
+            type="number"
+            id="stock"
+            placeholder="Cantidad"
+        >
+
+        <br><br>
+
+        <button
+            class="guardar"
+            onclick="guardarInventario()"
+        >
+            Guardar
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Variante</th>
+                <th>Sucursal</th>
+                <th>Stock</th>
+                <th>Agregar</th>
+                <th>Quitar</th>
+                <th>Acción</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="lista"></tbody>
+
+    </table>
+
+    <script src="/inventario/inventario.js"></script>
+
+</body>
+
+</html>
