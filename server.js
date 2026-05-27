@@ -1306,7 +1306,10 @@ app.put('/api/inventario/quitar/:id', async (req, res) => {
     }
 
 });
-
+app.get('/debug-db', async (req, res) => {
+    const result = await pool.query('SELECT COUNT(*) FROM productos');
+    res.json(result.rows[0]);
+});
 // ======================
 // SERVIDOR
 // ======================
