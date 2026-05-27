@@ -23,70 +23,154 @@
         /* ======================
            NAV
         ====================== */
+
         nav{
             background:#8b5e3c;
             padding: 15px;
             text-align: center;
             margin-bottom: 20px;
+            border-radius: 10px;
         }
 
         nav a{
             color:white;
             margin: 10px;
             text-decoration: none;
+            font-weight: normal;
+        }
+
+        nav a:hover{
+            text-decoration: underline;
         }
 
         /* ======================
-           FORMULARIO CENTRADO
+           FORMULARIO
         ====================== */
+
         .formulario{
+
             background: white;
+
             padding: 20px;
+
             border-radius: 10px;
+
             margin-bottom: 20px;
 
             display: flex;
+
             flex-wrap: wrap;
+
             justify-content: center;
+
+            align-items: center;
+
             gap: 10px;
+
         }
 
-        input{
+        input,
+        select{
+
             padding: 10px;
+
             width: 220px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 5px;
+
         }
 
         button{
+
             padding: 10px 20px;
+
             border: none;
+
             background: #3d8536;
+
             color: white;
+
             cursor: pointer;
+
             border-radius: 5px;
+
+            font-weight: bold;
+
+        }
+
+        button:hover{
+            opacity: 0.9;
+        }
+
+        .guardar{
+            background:#3d8536;
+        }
+
+        .editar{
+            background:#d48b00;
+        }
+
+        .eliminar{
+            background:red;
         }
 
         table{
+
             width: 100%;
+
             border-collapse: collapse;
+
             background: white;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
         }
 
         th{
+
             background: #8b5e3c;
+
             color: white;
+
         }
 
-        th, td{
+        th,
+        td{
+
             padding: 10px;
+
             border: 1px solid #ddd;
+
             text-align: center;
+
         }
 
         img{
+
             width: 80px;
+
             height: 80px;
+
             object-fit: cover;
+
             border-radius: 5px;
+
+        }
+
+        .preview{
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            width:100%;
+
         }
 
     </style>
@@ -95,21 +179,57 @@
 
 <body>
 
-    <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+    <!-- ======================
+         NAV
+    ====================== -->
 
-        <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
-        <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
-        <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
-        <a href="/productos/index.html" style="color:white; margin: 10px;">Productos</a>
-        <a href="/variantes/index.html" style="color:white; margin: 10px;">Variantes</a>
-        <a href="/sucursales/index.html" style="color:white; margin: 10px;">Sucursales</a>
-        <a href="/plataformas/index.html" style="color:white; margin: 10px;">Plataformas</a>
-        <a href="/inventario/index.html" style="color:white; margin: 10px;">Inventario</a>
-        <a href="/catalogo/index.html" style="color:white; margin: 10px;">Catalogo</a>
+    <nav>
+
+        <a href="/pagos/index.html">Pagos</a>
+
+        <a href="/servicios/index.html">
+            Servicio Texanas
+        </a>
+
+        <a href="/almidonado/index.html">
+            Servicio Almidonado
+        </a>
+
+        <a href="/productos/index.html">
+            Productos
+        </a>
+
+        <a href="/variantes/index.html">
+            Variantes
+        </a>
+
+        <a href="/sucursales/index.html">
+            Sucursales
+        </a>
+
+        <a href="/plataformas/index.html">
+            Plataformas
+        </a>
+
+        <a href="/inventario/index.html">
+            Inventario
+        </a>
+
+        <a href="/catalogo/index.html">
+            Catalogo
+        </a>
 
     </nav>
 
+    <!-- ======================
+         TITULO
+    ====================== -->
+
     <h1>Inventario</h1>
+
+    <!-- ======================
+         FORMULARIO
+    ====================== -->
 
     <div class="formulario">
 
@@ -145,8 +265,6 @@
 
         </div>
 
-        <br><br>
-
         <select id="variante">
 
             <option value="">
@@ -169,8 +287,6 @@
             placeholder="Cantidad"
         >
 
-        <br><br>
-
         <button
             class="guardar"
             onclick="guardarInventario()"
@@ -179,6 +295,10 @@
         </button>
 
     </div>
+
+    <!-- ======================
+         TABLA
+    ====================== -->
 
     <table>
 
@@ -194,7 +314,7 @@
                 <th>Stock</th>
                 <th>Agregar</th>
                 <th>Quitar</th>
-                <th>Acción</th>
+                <th>Acciones</th>
 
             </tr>
 
@@ -203,6 +323,10 @@
         <tbody id="lista"></tbody>
 
     </table>
+
+    <!-- ======================
+         JS
+    ====================== -->
 
     <script src="/inventario/inventario.js"></script>
 

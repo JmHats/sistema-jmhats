@@ -2,7 +2,7 @@ function calcularTotal() {
     let total = 0;
 
     document.querySelectorAll('input[type="checkbox"][value]:checked')
-    .forEach(el => total += parseFloat(el.value));
+        .forEach(el => total += parseFloat(el.value));
 
     // HERRAJES
     for (let i = 1; i <= 3; i++) {
@@ -41,17 +41,45 @@ function imprimirTicket() {
     const nombre = document.getElementById('nombre').value;
     const telefono = document.getElementById('numero').value;
     const total = document.getElementById('total').innerText;
+    const pagoInput = document.getElementById('pago').value.toLowerCase();
 
-    function generar(tipo) {
+    const estadoPago =
+        pagoInput === 'pagado' || pagoInput === 'si'
+            ? 'PAGADO'
+            : 'PENDIENTE';
+
+    // FECHA
+    const fecha = new Date();
+
+    const opciones = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+
+    const fechaTexto = fecha.toLocaleDateString('es-MX', opciones);
+
+    function generar(tipo, esCliente = false) {
 
         let contenido = `
-        JM HATS
+JM HATS
 ${tipo}
+Fecha: ${fechaTexto}
 --------------------------
 Cliente: ${nombre}
 Tel: ${telefono}
 --------------------------
 `;
+
+        // HORARIOS SOLO CLIENTE
+        if (esCliente) {
+            contenido += `
+HORARIOS DE ATENCIÓN
+Lunes a Sábado: 10 am - 8 pm
+Domingo: 11 am - 4 pm
+--------------------------
+`;
+        }
 
         for (let i = 1; i <= 3; i++) {
 
@@ -61,7 +89,7 @@ Tel: ${telefono}
             let servicios = [];
 
             document.querySelectorAll(`.servicio${i}:checked`)
-            .forEach(el => servicios.push(el.parentElement.innerText));
+                .forEach(el => servicios.push(el.parentElement.innerText));
 
             const herrajeCheck = document.getElementById(`herraje${i}_check`);
             const letras = document.getElementById(`herraje${i}`).value;
@@ -87,9 +115,11 @@ Tel: ${telefono}
             }
         }
 
+        // 💰 TOTAL + PAGO
         contenido += `
 --------------------------
 TOTAL: $${total}
+PAGO: ${estadoPago}
 
 Gracias por su compra
 `;
@@ -97,11 +127,13 @@ Gracias por su compra
         return contenido;
     }
 
-    // 🔥 AQUÍ SE GENERAN LAS 2 COPIAS
+    const cliente = generar('--- COPIA CLIENTE ---', true);
+    const empresa = generar('--- COPIA NEGOCIO ---', false);
+
     const contenidoFinal =
-        generar('--- COPIA CLIENTE ---') +
+        cliente +
         '\n\n==========================\n\n' +
-        generar('--- COPIA NEGOCIO ---');
+        empresa;
 
     const win = window.open('', '', 'width=300,height=600');
 

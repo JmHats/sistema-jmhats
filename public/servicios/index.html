@@ -48,6 +48,13 @@
             width: 100%;
         }
 
+        .fecha{
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
     </style>
 
 </head>
@@ -75,18 +82,23 @@
         <a href="/variantes/index.html" style="color:white; margin: 10px;">
             Variantes
         </a>
+
         <a href="/sucursales/index.html" style="color:white; margin: 10px;">
             Sucursales
         </a>
+
         <a href="/plataformas/index.html" style="color:white; margin: 10px;">
             Plataformas
         </a>
+
         <a href="/inventario/index.html" style="color:white; margin: 10px;">
             Inventario
         </a>
+
         <a href="/catalogo/index.html" style="color:white; margin: 10px;">
             Catalogo
         </a>
+
     </nav>
 
     <div style="position: relative;">
@@ -281,6 +293,11 @@
             <span id="total">0</span>
         </h2>
 
+        <label>
+            Pago (escribe: Pagado o Pendiente):
+        </label>
+        <input id="pago" placeholder="Pendiente / Pagado">
+
         <button onclick="calcularTotal()">
             Calcular
         </button>
@@ -295,8 +312,23 @@
 
     </div>
 
+    <script>
+
+        // FECHA ACTUAL
+        const fecha = new Date();
+
+        const opciones = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+
+        document.getElementById('fechaActual').innerText =
+            fecha.toLocaleDateString('es-MX', opciones);
+
+    </script>
+
     <script src="/servicios/servicios.js"></script>
 
 </body>
-
 </html>

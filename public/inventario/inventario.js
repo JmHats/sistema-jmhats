@@ -7,6 +7,14 @@ async function buscarProducto(){
     const codigo =
         document.getElementById('codigoProducto').value;
 
+    if(!codigo){
+
+        limpiarFormulario();
+
+        return;
+
+    }
+
     const respuesta =
         await fetch('/api/productos');
 
@@ -130,9 +138,6 @@ async function cargarSucursales(idProducto){
 
 async function guardarInventario(){
 
-    const idInventario =
-        document.getElementById('idInventario').value;
-
     const datos = {
 
         id_producto:
@@ -148,6 +153,9 @@ async function guardarInventario(){
             document.getElementById('stock').value
 
     };
+
+    const idInventario =
+        document.getElementById('idInventario').value;
 
     let url =
         '/api/inventario';
@@ -172,7 +180,7 @@ async function guardarInventario(){
 
             headers: {
                 'Content-Type':
-                'application/json'
+                    'application/json'
             },
 
             body:
@@ -185,9 +193,9 @@ async function guardarInventario(){
 
     alert(data.mensaje);
 
-    limpiarFormulario();
-
     cargarInventario();
+
+    limpiarFormulario();
 
 }
 
@@ -236,9 +244,7 @@ async function cargarInventario(){
 
             <td>${item.sucursal}</td>
 
-            <td id="stock-${item.id_inventario}">
-                ${item.stock}
-            </td>
+            <td>${item.stock}</td>
 
             <td>
 
@@ -250,7 +256,7 @@ async function cargarInventario(){
                 >
 
                 <button
-                    onclick="sumarInput(${item.id_inventario})"
+                    onclick="agregarStock(${item.id_inventario})"
                 >
                     +
                 </button>
@@ -268,7 +274,7 @@ async function cargarInventario(){
 
                 <button
                     style="background:red;"
-                    onclick="restarInput(${item.id_inventario})"
+                    onclick="quitarStock(${item.id_inventario})"
                 >
                     -
                 </button>
@@ -278,23 +284,13 @@ async function cargarInventario(){
             <td>
 
                 <button
-                    style="background:green;"
-                    onclick="guardarCambiosStock(${item.id_inventario})"
-                >
-                    Guardar
-                </button>
-
-                <br><br>
-
-                <button
-                    class="editar"
                     onclick="editarInventario(${item.id_inventario})"
                 >
                     Editar
                 </button>
 
                 <button
-                    class="eliminar"
+                    style="background:red;"
                     onclick="eliminarInventario(${item.id_inventario})"
                 >
                     Eliminar
@@ -311,79 +307,6 @@ async function cargarInventario(){
 }
 
 // ======================
-// EDITAR INVENTARIO
-// ======================
-
-async function editarInventario(id){
-
-    const respuesta =
-        await fetch('/api/inventario');
-
-    const inventario =
-        await respuesta.json();
-
-    const item =
-        inventario.find(i => i.id_inventario == id);
-
-    if(!item) return;
-
-    document.getElementById('idInventario').value =
-        item.id_inventario;
-
-    document.getElementById('idProducto').value =
-        item.id_producto;
-
-    document.getElementById('nombreProducto').value =
-        item.nombre;
-
-    document.getElementById('imagenProducto').src =
-        '/uploads/' + item.imagen;
-
-    document.getElementById('imagenProducto').style.display =
-        'block';
-
-    await cargarVariantes(item.id_producto);
-
-    document.getElementById('variante').value =
-        item.id_variante;
-
-    await cargarSucursales(item.id_producto);
-
-    document.getElementById('sucursal').value =
-        item.sucursal;
-
-    document.getElementById('stock').value =
-        item.stock;
-
-}
-
-// ======================
-// ELIMINAR INVENTARIO
-// ======================
-
-async function eliminarInventario(id){
-
-    const confirmar =
-        confirm('¿Deseas eliminar este inventario?');
-
-    if(!confirmar) return;
-
-    const respuesta =
-        await fetch('/api/inventario/' + id, {
-
-            method: 'DELETE'
-
-        });
-
-    const data =
-        await respuesta.json();
-
-    alert(data.mensaje);
-
-    cargarInventario();
-
-}
-// ======================
 // AGREGAR STOCK
 // ======================
 
@@ -394,7 +317,7 @@ async function agregarStock(id){
 
     if(!cantidad || cantidad <= 0){
 
-        alert('Ingresa una cantidad');
+        alert('Ingresa cantidad');
 
         return;
 
@@ -406,16 +329,12 @@ async function agregarStock(id){
             method: 'PUT',
 
             headers: {
-
                 'Content-Type':
                     'application/json'
-
             },
 
             body: JSON.stringify({
-
                 cantidad
-
             })
 
         });
@@ -440,7 +359,7 @@ async function quitarStock(id){
 
     if(!cantidad || cantidad <= 0){
 
-        alert('Ingresa una cantidad');
+        alert('Ingresa cantidad');
 
         return;
 
@@ -452,16 +371,12 @@ async function quitarStock(id){
             method: 'PUT',
 
             headers: {
-
                 'Content-Type':
                     'application/json'
-
             },
 
             body: JSON.stringify({
-
                 cantidad
-
             })
 
         });
@@ -474,121 +389,122 @@ async function quitarStock(id){
     cargarInventario();
 
 }
+
 // ======================
-// SUMAR INPUT
+// EDITAR
 // ======================
 
-function sumarInput(id){
+async function editarInventario(id){
 
-    const inputAgregar =
-        document.getElementById(`agregar-${id}`);
+    try {
 
-    const inputQuitar =
-        document.getElementById(`quitar-${id}`);
+        const respuesta =
+            await fetch('/api/inventario');
 
-    let valor =
-        parseInt(inputAgregar.value || 0);
+        const inventario =
+            await respuesta.json();
 
-    valor++;
+        const item =
+            inventario.find(i =>
+                i.id_inventario == id
+            );
 
-    inputAgregar.value =
-        valor;
+        if(!item){
 
-    inputQuitar.value = '';
+            alert('Inventario no encontrado');
+
+            return;
+
+        }
+
+        // llenar datos
+        document.getElementById('idInventario').value =
+            item.id_inventario;
+
+        document.getElementById('idProducto').value =
+            item.id_producto;
+
+        document.getElementById('nombreProducto').value =
+            item.nombre;
+
+        document.getElementById('stock').value =
+            item.stock;
+
+        // imagen
+        const imagen =
+            document.getElementById('imagenProducto');
+
+        imagen.src =
+            '/uploads/' + item.imagen;
+
+        imagen.style.display =
+            'block';
+
+        // cargar variantes
+        await cargarVariantes(item.id_producto);
+
+        setTimeout(() => {
+
+            document.getElementById('variante').value =
+                item.id_variante;
+
+        }, 100);
+
+        // cargar sucursales
+        await cargarSucursales(item.id_producto);
+
+        setTimeout(() => {
+
+            document.getElementById('sucursal').value =
+                item.sucursal;
+
+        }, 100);
+
+        // subir arriba
+        window.scrollTo({
+
+            top: 0,
+            behavior: 'smooth'
+
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        alert('Error al editar inventario');
+
+    }
 
 }
 
 // ======================
-// RESTAR INPUT
+// ELIMINAR
 // ======================
 
-function restarInput(id){
+async function eliminarInventario(id){
 
-    const inputAgregar =
-        document.getElementById(`agregar-${id}`);
+    const confirmar =
+        confirm('¿Eliminar inventario?');
 
-    const inputQuitar =
-        document.getElementById(`quitar-${id}`);
+    if(!confirmar) return;
 
-    let valor =
-        parseInt(inputQuitar.value || 0);
+    const respuesta =
+        await fetch('/api/inventario/' + id, {
 
-    valor++;
-
-    inputQuitar.value =
-        valor;
-
-    inputAgregar.value = '';
-
-}
-
-// ======================
-// GUARDAR CAMBIOS STOCK
-// ======================
-
-async function guardarCambiosStock(id){
-
-    const agregar =
-        parseInt(
-            document.getElementById(`agregar-${id}`).value || 0
-        );
-
-    const quitar =
-        parseInt(
-            document.getElementById(`quitar-${id}`).value || 0
-        );
-
-    if(agregar > 0){
-
-        await fetch(`/api/inventario/agregar/${id}`, {
-
-            method: 'PUT',
-
-            headers: {
-
-                'Content-Type':
-                    'application/json'
-
-            },
-
-            body: JSON.stringify({
-
-                cantidad: agregar
-
-            })
+            method: 'DELETE'
 
         });
 
-    }
+    const data =
+        await respuesta.json();
 
-    if(quitar > 0){
-
-        await fetch(`/api/inventario/quitar/${id}`, {
-
-            method: 'PUT',
-
-            headers: {
-
-                'Content-Type':
-                    'application/json'
-
-            },
-
-            body: JSON.stringify({
-
-                cantidad: quitar
-
-            })
-
-        });
-
-    }
-
-    alert('Stock actualizado');
+    alert(data.mensaje);
 
     cargarInventario();
 
 }
+
 // ======================
 // LIMPIAR
 // ======================

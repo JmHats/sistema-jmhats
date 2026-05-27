@@ -1,263 +1,175 @@
-let idEditando = null;
-
-// ======================
-// BUSCAR PRODUCTO
-// ======================
-
-async function buscarProducto(){
+async function buscarProducto() {
 
     const codigo =
         document.getElementById('codigoProducto').value;
 
-    if(codigo == ''){
+    if (codigo.length < 1) return;
 
-        document.getElementById('nombreProducto').value = '';
+    try {
 
-        document.getElementById('imagenProducto').style.display =
-            'none';
+        const res =
+            await fetch(`/api/producto/codigo/${codigo}`);
 
-        return;
+        if (!res.ok) return;
 
-    }
-
-    const respuesta =
-        await fetch('/api/productos');
-
-    const productos =
-        await respuesta.json();
-
-    const producto =
-        productos.find(p => p.codigo == codigo);
-
-    if(producto){
-
-        document.getElementById('idProducto').value =
-            producto.id_producto;
+        const producto =
+            await res.json();
 
         document.getElementById('nombreProducto').value =
             producto.nombre;
 
-        document.getElementById('imagenProducto').src =
-            '/uploads/' + producto.imagen;
+        document.getElementById('idProducto').value =
+            producto.id_producto;
 
-        document.getElementById('imagenProducto').style.display =
-            'block';
+        if (producto.imagen) {
 
-    }else{
+            const img =
+                document.getElementById('imagenProducto');
 
-        document.getElementById('idProducto').value = '';
+            img.src =
+                '/uploads/' + producto.imagen;
 
-        document.getElementById('nombreProducto').value =
-            'Producto no encontrado';
+            img.style.display = 'block';
 
-        document.getElementById('imagenProducto').style.display =
-            'none';
+        }
+
+    } catch (error) {
+
+        console.log(error);
 
     }
 
 }
 
 // ======================
-// GUARDAR O EDITAR
+// CAMBIAR TALLAS
 // ======================
 
-async function guardarVariante(){
+function cambiarTallas() {
 
-    const datos = {
+    const tipo =
+        document.getElementById('tipoVariante').value;
 
-        id_producto:
-            document.getElementById('idProducto').value,
+    const talla =
+        document.getElementById('talla');
 
-        color:
-            document.getElementById('color').value,
+    const cantidadOtro =
+        document.getElementById('cantidadOtro');
 
-        talla:
-            document.getElementById('talla').value
+    talla.innerHTML = '';
 
-    };
+    let tallas = [];
 
-    if(datos.id_producto == ''){
+    // ======================
+    // SI ES OTRO
+    // ======================
 
-        alert('Producto no encontrado');
+    if (tipo === 'Otro') {
+
+        talla.style.display = 'none';
+
+        cantidadOtro.style.display = 'block';
 
         return;
 
     }
 
-    let url =
-        '/api/variantes';
+    else {
 
-    let metodo =
-        'POST';
+        talla.style.display = 'block';
 
-    // ======================
-    // EDITAR
-    // ======================
-
-    if(idEditando){
-
-        url =
-            '/api/variantes/' + idEditando;
-
-        metodo =
-            'PUT';
+        cantidadOtro.style.display = 'none';
 
     }
 
-    const respuesta =
-        await fetch(url, {
+    // ======================
+    // BOTAS MUJER
+    // ======================
 
-            method: metodo,
+    if (tipo === 'Botas Mujer') {
 
-            headers: {
+        tallas = [
+            '22',
+            '22.5',
+            '23',
+            '23.5',
+            '24',
+            '24.5',
+            '25',
+            '25.5',
+            '26',
+            '26.5',
+            '27'
+        ];
 
-                'Content-Type':
-                    'application/json'
+    }
 
-            },
+    // ======================
+    // BOTAS HOMBRE
+    // ======================
 
-            body:
-                JSON.stringify(datos)
+    else if (tipo === 'Botas de hombre') {
 
-        });
+        tallas = [
+            '25',
+            '25.5',
+            '26',
+            '26.5',
+            '27',
+            '27.5',
+            '28',
+            '28.5',
+            '29',
+            '29.5',
+            '30'
+        ];
 
-    const data =
-        await respuesta.json();
+    }
 
-    alert(data.mensaje);
+    // ======================
+    // BOTAS NIÑO
+    // ======================
 
-    limpiarFormulario();
+    else if (tipo === 'Botas de niño') {
 
-    cargarVariantes();
+        tallas = [
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22'
+        ];
 
-}
+    }
 
-// ======================
-// LIMPIAR
-// ======================
+    // ======================
+    // ROPA Y PANTALONES
+    // ======================
 
-function limpiarFormulario(){
+    else {
 
-    idEditando = null;
+        tallas = [
+            'CH',
+            'M',
+            'G',
+            'XG'
+        ];
 
-    document.getElementById('codigoProducto').value = '';
-    document.getElementById('nombreProducto').value = '';
-    document.getElementById('idProducto').value = '';
-    document.getElementById('color').value = '';
-    document.getElementById('talla').value = '';
+    }
 
-    document.getElementById('imagenProducto').style.display =
-        'none';
+    talla.innerHTML =
+        '<option value="">Selecciona talla</option>';
 
-}
+    tallas.forEach(t => {
 
-// ======================
-// CARGAR VARIANTES
-// ======================
+        talla.innerHTML += `
 
-async function cargarVariantes(){
-
-    const respuesta =
-        await fetch('/api/variantes');
-
-    const variantes =
-        await respuesta.json();
-
-    const lista =
-        document.getElementById('lista');
-
-    lista.innerHTML = '';
-
-    variantes.forEach(variante => {
-
-        lista.innerHTML += `
-
-        <tr>
-
-            <td>${variante.id_variante}</td>
-
-            <td>${variante.id_producto}</td>
-
-            <td>
-
-                <img
-                    src="/uploads/${variante.imagen}"
-                >
-
-            </td>
-
-            <td>
-
-                ${variante.codigo}
-
-                <br><br>
-
-                ${variante.nombre}
-
-            </td>
-
-            <td>${variante.color}</td>
-
-            <td>${variante.talla}</td>
-
-            <td>
-
-                <button
-
-                    onclick="editarVariante(
-
-                        ${variante.id_variante},
-
-                        '${variante.codigo}',
-
-                        '${variante.nombre}',
-
-                        '${variante.imagen}',
-
-                        '${variante.id_producto}',
-
-                        '${variante.color}',
-
-                        '${variante.talla}'
-
-                    )"
-
-                    style="
-                        background:orange;
-                        color:white;
-                        border:none;
-                        padding:8px 12px;
-                        cursor:pointer;
-                        border-radius:5px;
-                        margin-right:5px;
-                    "
-                >
-
-                    Editar
-
-                </button>
-
-                <button
-
-                    onclick="eliminarVariante(${variante.id_variante})"
-
-                    style="
-                        background:red;
-                        color:white;
-                        border:none;
-                        padding:8px 12px;
-                        cursor:pointer;
-                        border-radius:5px;
-                    "
-                >
-
-                    Eliminar
-
-                </button>
-
-            </td>
-
-        </tr>
+            <option value="${t}">
+                ${t}
+            </option>
 
         `;
 
@@ -266,49 +178,123 @@ async function cargarVariantes(){
 }
 
 // ======================
-// EDITAR
+// GUARDAR
 // ======================
 
-function editarVariante(
+async function guardarVariante() {
 
-    id_variante,
-    codigo,
-    nombre,
-    imagen,
-    id_producto,
-    color,
-    talla
+    const id_producto =
+        document.getElementById('idProducto').value;
 
-){
+    const color =
+        document.getElementById('color').value;
 
-    idEditando =
-        id_variante;
+    const tipo =
+        document.getElementById('tipoVariante').value;
 
-    document.getElementById('codigoProducto').value =
-        codigo;
+    const tallaSelect =
+        document.getElementById('talla').value;
 
-    document.getElementById('nombreProducto').value =
-        nombre;
+    const cantidadOtro =
+        document.getElementById('cantidadOtro').value;
 
-    document.getElementById('idProducto').value =
-        id_producto;
+    let talla = tallaSelect;
 
-    document.getElementById('color').value =
-        color;
+    // SI ES OTRO
+    if (tipo === 'Otro') {
 
-    document.getElementById('talla').value =
-        talla;
+        talla =
+            'Cantidad: ' + cantidadOtro;
 
-    document.getElementById('imagenProducto').src =
-        '/uploads/' + imagen;
+    }
 
-    document.getElementById('imagenProducto').style.display =
-        'block';
+    if (!id_producto) {
 
-    window.scrollTo({
+        alert('Busca un producto');
 
-        top: 0,
-        behavior: 'smooth'
+        return;
+
+    }
+
+    await fetch('/api/variantes', {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+
+            id_producto,
+            color,
+            talla
+
+        })
+
+    });
+
+    alert('Variante guardada');
+
+    // LIMPIAR
+    document.getElementById('color').value = '';
+    document.getElementById('talla').value = '';
+    document.getElementById('cantidadOtro').value = '';
+
+    cargarVariantes();
+
+}
+
+// ======================
+// CARGAR VARIANTES
+// ======================
+
+async function cargarVariantes() {
+
+    const res =
+        await fetch('/api/variantes');
+
+    const data =
+        await res.json();
+
+    const lista =
+        document.getElementById('lista');
+
+    lista.innerHTML = '';
+
+    data.forEach(v => {
+
+        lista.innerHTML += `
+
+            <tr>
+
+                <td>${v.id_variante}</td>
+
+                <td>${v.id_producto}</td>
+
+                <td>
+                    <img src="/uploads/${v.imagen}">
+                </td>
+
+                <td>${v.nombre}</td>
+
+                <td>${v.color}</td>
+
+                <td>${v.talla}</td>
+
+                <td>
+
+                    <button onclick="eliminarVariante(${v.id_variante})">
+
+                        Eliminar
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
 
     });
 
@@ -318,24 +304,15 @@ function editarVariante(
 // ELIMINAR
 // ======================
 
-async function eliminarVariante(id){
+async function eliminarVariante(id) {
 
-    const confirmar =
-        confirm('¿Eliminar variante?');
+    if (!confirm('¿Eliminar variante?')) return;
 
-    if(!confirmar) return;
+    await fetch(`/api/variantes/${id}`, {
 
-    const respuesta =
-        await fetch('/api/variantes/' + id, {
+        method: 'DELETE'
 
-            method: 'DELETE'
-
-        });
-
-    const data =
-        await respuesta.json();
-
-    alert(data.mensaje);
+    });
 
     cargarVariantes();
 

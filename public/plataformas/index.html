@@ -37,56 +37,79 @@
         }
 
         /* ======================
-           FORMULARIO CENTRADO
+           FORMULARIO
         ====================== */
-        .formulario{
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        #busqueda{
+            display:flex;
+            gap:10px;
+            margin-bottom:20px;
+        }
 
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+        #form{
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
         }
 
         input{
-            padding: 10px;
-            width: 220px;
+            padding:10px;
+            width:220px;
         }
 
         button{
-            padding: 10px 20px;
-            border: none;
-            background: #3d8536;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
+            padding:10px 20px;
+            border:none;
+            background:#3d8536;
+            color:white;
+            cursor:pointer;
+            border-radius:5px;
+        }
+
+        button:hover{
+            opacity:0.9;
         }
 
         table{
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
+            width:100%;
+            border-collapse:collapse;
+            background:white;
         }
 
         th{
-            background: #8b5e3c;
-            color: white;
+            background:#8b5e3c;
+            color:white;
         }
 
         th, td{
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
+            padding:10px;
+            border:1px solid #ddd;
+            text-align:center;
         }
 
         img{
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 5px;
+            width:80px;
+            height:80px;
+            object-fit:cover;
+            border-radius:5px;
+        }
+
+        .badge{
+            display:inline-block;
+            padding:5px 10px;
+            border-radius:20px;
+            background:#3d8536;
+            color:white;
+            margin:2px;
+            font-size:12px;
+        }
+
+        .eliminar{
+            background:#c0392b;
+        }
+
+        .editar{
+            background:#d68910;
         }
 
     </style>
@@ -95,41 +118,41 @@
 
 <body>
 
-    <nav style="background:#8b5e3c; padding: 15px; text-align: center;">
+    <nav>
 
-        <a href="/pagos/index.html" style="color:white; margin: 10px;">
+        <a href="/pagos/index.html">
             Pagos
         </a>
 
-        <a href="/servicios/index.html" style="color:white; margin: 10px;">
+        <a href="/servicios/index.html">
             Servicio Texanas
         </a>
 
-        <a href="/almidonado/index.html" style="color:white; margin: 10px;">
+        <a href="/almidonado/index.html">
             Servicio Almidonado
         </a>
 
-        <a href="/productos/index.html" style="color:white; margin: 10px;">
+        <a href="/productos/index.html">
             Productos
         </a>
 
-        <a href="/variantes/index.html" style="color:white; margin: 10px;">
+        <a href="/variantes/index.html">
             Variantes
         </a>
 
-        <a href="/sucursales/index.html" style="color:white; margin: 10px;">
+        <a href="/sucursales/index.html">
             Sucursales
         </a>
 
-        <a href="/plataformas/index.html" style="color:white; margin: 10px;">
+        <a href="/plataformas/index.html">
             Plataformas
         </a>
 
-        <a href="/inventario/index.html" style="color:white; margin: 10px;">
+        <a href="/inventario/index.html">
             Inventario
         </a>
 
-        <a href="/catalogo/index.html" style="color:white; margin: 10px;">
+        <a href="/catalogo/index.html">
             Catalogo
         </a>
 
@@ -137,9 +160,16 @@
 
     <h1>Plataformas</h1>
 
-    <div>
+    <!-- ======================
+         BUSCAR PRODUCTO
+    ======================= -->
 
-        <input id="codigo" placeholder="Código del producto">
+    <div id="busqueda">
+
+        <input
+            id="codigo"
+            placeholder="Código del producto"
+        >
 
         <button onclick="buscar()">
             Buscar
@@ -147,29 +177,53 @@
 
     </div>
 
-    <div id="form" style="display:none; margin-top:10px;">
+    <!-- ======================
+         FORMULARIO
+    ======================= -->
+
+    <div id="form" style="display:none;">
 
         <h3 id="nombre"></h3>
 
         <img id="imagen">
 
+        <br><br>
+
         <label>
-            <input type="checkbox" id="ml">
+
+            <input
+                type="checkbox"
+                id="ml"
+            >
+
             Mercado Libre
+
         </label>
 
-        <br>
+        <br><br>
 
         <label>
-            <input type="checkbox" id="tt">
+
+            <input
+                type="checkbox"
+                id="tt"
+            >
+
             TikTok
+
         </label>
 
-        <br>
+        <br><br>
 
         <label>
-            <input type="checkbox" id="web">
+
+            <input
+                type="checkbox"
+                id="web"
+            >
+
             Web
+
         </label>
 
         <br><br>
@@ -181,6 +235,10 @@
     </div>
 
     <hr>
+
+    <!-- ======================
+         TABLA
+    ======================= -->
 
     <h2>📋 Lista de productos</h2>
 
@@ -208,72 +266,116 @@
 
         let productoId = null;
 
-        // ================= BUSCAR PRODUCTO =================
+        // ======================
+        // BUSCAR PRODUCTO
+        // ======================
+
         async function buscar(){
 
-            const codigo = document.getElementById('codigo').value;
+            const codigo =
+                document.getElementById('codigo').value;
 
-            const res = await fetch(`/api/producto/codigo/${codigo}`);
+            if(!codigo){
 
-            if(!res.ok){
-
-                alert('No encontrado');
+                alert('Escribe un código');
 
                 return;
 
             }
 
-            const p = await res.json();
+            const res =
+                await fetch(
+                    `/api/producto/codigo/${codigo}`
+                );
 
-            productoId = p.id_producto;
+            if(!res.ok){
 
-            document.getElementById('nombre').innerText = p.nombre;
+                alert('Producto no encontrado');
 
-            document.getElementById('imagen').src = `/uploads/${p.imagen}`;
+                return;
 
-            document.getElementById('form').style.display = 'block';
+            }
+
+            const p =
+                await res.json();
+
+            productoId =
+                p.id_producto;
+
+            document.getElementById('nombre').innerText =
+                p.nombre;
+
+            document.getElementById('imagen').src =
+                `/uploads/${p.imagen}`;
+
+            document.getElementById('form').style.display =
+                'block';
 
         }
 
-        // ================= GUARDAR =================
+        // ======================
+        // GUARDAR
+        // ======================
+
         async function guardar(){
 
-            await fetch('/api/plataformas', {
+            if(!productoId){
 
-                method: 'POST',
+                alert('Busca un producto');
 
-                headers: {
-                    'Content-Type':'application/json'
-                },
+                return;
 
-                body: JSON.stringify({
+            }
 
-                    id_producto: productoId,
+            const res =
+                await fetch('/api/plataformas', {
 
-                    mercado_libre: document.getElementById('ml').checked ? 1 : 0,
+                    method:'POST',
 
-                    tiktok: document.getElementById('tt').checked ? 1 : 0,
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
 
-                    web: document.getElementById('web').checked ? 1 : 0
+                    body: JSON.stringify({
 
-                })
+                        id_producto: productoId,
 
-            });
+                        mercado_libre:
+                            document.getElementById('ml').checked ? 1 : 0,
+
+                        tiktok:
+                            document.getElementById('tt').checked ? 1 : 0,
+
+                        web:
+                            document.getElementById('web').checked ? 1 : 0
+
+                    })
+
+                });
+
+            const data =
+                await res.json();
+
+            alert(data.mensaje);
 
             cargarTabla();
 
-            alert('Guardado');
-
         }
 
-        // ================= CARGAR TABLA =================
+        // ======================
+        // CARGAR TABLA
+        // ======================
+
         async function cargarTabla(){
 
-            const res = await fetch('/api/plataformas');
+            const res =
+                await fetch('/api/plataformas');
 
-            const data = await res.json();
+            const data =
+                await res.json();
 
-            const tabla = document.getElementById('tabla');
+            const tabla =
+                document.getElementById('tabla');
 
             tabla.innerHTML = '';
 
@@ -282,95 +384,161 @@
                 let plataformas = '';
 
                 if(p.mercado_libre){
+
                     plataformas += `
                         <span class="badge">
                             Mercado Libre
                         </span>
                     `;
+
                 }
 
                 if(p.tiktok){
+
                     plataformas += `
                         <span class="badge">
                             TikTok
                         </span>
                     `;
+
                 }
 
                 if(p.web){
+
                     plataformas += `
                         <span class="badge">
                             Web
                         </span>
                     `;
+
                 }
 
                 tabla.innerHTML += `
+
                     <tr>
 
-                        <td>${p.codigo}</td>
-
-                        <td>${p.nombre}</td>
-
                         <td>
-                            <img src="/uploads/${p.imagen}">
+                            ${p.codigo || ''}
                         </td>
 
                         <td>
+                            ${p.nombre || ''}
+                        </td>
+
+                        <td>
+
+                            <img
+                                src="/uploads/${p.imagen}"
+                            >
+
+                        </td>
+
+                        <td>
+
                             ${plataformas || 'Sin plataformas'}
+
                         </td>
 
                         <td>
 
-                            <button onclick="eliminar(${p.id_producto})">
-                                🗑 Eliminar
+                            <button
+                                class="editar"
+                                onclick="editar(
+                                    ${p.id_producto},
+                                    ${p.mercado_libre || 0},
+                                    ${p.tiktok || 0},
+                                    ${p.web || 0}
+                                )"
+                            >
+                                ✏ Editar
                             </button>
 
-                            <button onclick="editar(
-                                ${p.id_producto},
-                                ${p.mercado_libre || 0},
-                                ${p.tiktok || 0},
-                                ${p.web || 0}
-                            )">
-                                ✏ Editar
+                            <button
+                                class="eliminar"
+                                onclick="eliminar(${p.id_producto})"
+                            >
+                                🗑 Eliminar
                             </button>
 
                         </td>
 
                     </tr>
+
                 `;
 
             });
 
         }
 
-        // ================= ELIMINAR =================
+        // ======================
+        // ELIMINAR
+        // ======================
+
         async function eliminar(id){
 
+            if(!confirm('¿Eliminar plataformas?')){
+
+                return;
+
+            }
+
             await fetch(`/api/plataformas/${id}`, {
-                method: 'DELETE'
+
+                method:'DELETE'
+
             });
 
             cargarTabla();
 
         }
 
-        // ================= EDITAR =================
-        function editar(id, ml, tt, web){
+        // ======================
+        // EDITAR
+        // ======================
+
+        async function editar(id, ml, tt, web){
 
             productoId = id;
 
-            document.getElementById('ml').checked = ml;
+            document.getElementById('ml').checked =
+                ml;
 
-            document.getElementById('tt').checked = tt;
+            document.getElementById('tt').checked =
+                tt;
 
-            document.getElementById('web').checked = web;
+            document.getElementById('web').checked =
+                web;
 
-            document.getElementById('form').style.display = 'block';
+            const res =
+                await fetch('/api/productos');
+
+            const productos =
+                await res.json();
+
+            const producto =
+                productos.find(
+                    p => p.id_producto == id
+                );
+
+            if(producto){
+
+                document.getElementById('nombre').innerText =
+                    producto.nombre;
+
+                document.getElementById('imagen').src =
+                    `/uploads/${producto.imagen}`;
+
+            }
+
+            document.getElementById('form').style.display =
+                'block';
 
         }
 
-        // init
+        // ======================
+        // INIT
+        // ======================
+
         cargarTabla();
 
     </script>

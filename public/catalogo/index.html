@@ -8,107 +8,108 @@
 
     <style>
 
-        body {
+        body{
             font-family: Arial;
             padding: 20px;
             background: #f5f5f5;
         }
 
-        h1 {
+        h1{
             text-align: center;
         }
 
-        /* 🔍 BUSCADORES */
-        .buscador-container{
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
+        nav{
+            background:#8b5e3c;
+            padding:15px;
+            text-align:center;
         }
 
-        .buscador {
-            width: 250px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+        nav a{
+            color:white;
+            margin:10px;
+            text-decoration:none;
+            font-weight: normal;
+        }
+
+        .buscador-container{
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            margin-top:20px;
+            flex-wrap:wrap;
+        }
+
+        .buscador{
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+            width:220px;
         }
 
         .btn-buscar{
-            padding: 10px 15px;
-            background: #8b5e3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            background:#8b5e3c;
+            color:white;
+            border:none;
+            border-radius:8px;
+            padding:10px 20px;
+            cursor:pointer;
         }
 
-        .btn-buscar:hover{
-            background: #6e472d;
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            margin-top:20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            margin-top: 20px;
+        th{
+            background:#8b5e3c;
+            color:white;
+            padding:10px;
         }
 
-        th {
-            background: #8b5e3c;
-            color: white;
-            padding: 10px;
+        td{
+            padding:10px;
+            border:1px solid #ddd;
+            text-align:center;
         }
 
-        td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
+        img{
+            width:70px;
+            border-radius:5px;
+            cursor:pointer;
+            transition:0.3s;
         }
 
-        img {
-            width: 70px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
+        img:hover{
+            transform:scale(1.05);
         }
 
-        img:hover {
-            transform: scale(1.05);
+        .modal{
+            display:none;
+            position:fixed;
+            z-index:9999;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.95);
+            justify-content:center;
+            align-items:center;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            justify-content: center;
-            align-items: center;
+        .modal-contenido{
+            max-width:95%;
+            max-height:95%;
         }
 
-        .modal-contenido {
-            max-width: 98vw;
-            max-height: 98vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
-        }
-
-        .cerrar {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            color: white;
-            font-size: 45px;
-            cursor: pointer;
-            user-select: none;
+        .cerrar{
+            position:absolute;
+            top:20px;
+            right:30px;
+            color:white;
+            font-size:40px;
+            cursor:pointer;
         }
 
     </style>
@@ -117,38 +118,61 @@
 
 <body>
 
-<nav style="background:#8b5e3c; padding: 15px; text-align: center;">
-    <a href="/pagos/index.html" style="color:white; margin: 10px;">Pagos</a>
-    <a href="/servicios/index.html" style="color:white; margin: 10px;">Servicio Texanas</a>
-    <a href="/almidonado/index.html" style="color:white; margin: 10px;">Servicio Almidonado</a>
-    <a href="/productos/index.html" style="color:white; margin: 10px;">Productos</a>
-    <a href="/variantes/index.html" style="color:white; margin: 10px;">Variantes</a>
-    <a href="/sucursales/index.html" style="color:white; margin: 10px;">Sucursales</a>
-    <a href="/plataformas/index.html" style="color:white; margin: 10px;">Plataformas</a>
-    <a href="/inventario/index.html" style="color:white; margin: 10px;">Inventario</a>
-    <a href="#" style="color:white; margin: 10px;">Catálogo</a>
+<nav>
+
+    <a href="/pagos/index.html">Pagos</a>
+    <a href="/servicios/index.html">Servicio Texanas</a>
+    <a href="/almidonado/index.html">Servicio Almidonado</a>
+    <a href="/productos/index.html">Productos</a>
+    <a href="/variantes/index.html">Variantes</a>
+    <a href="/sucursales/index.html">Sucursales</a>
+    <a href="/plataformas/index.html">Plataformas</a>
+    <a href="/inventario/index.html">Inventario</a>
+    <a href="#">Catálogo</a>
+
 </nav>
 
 <h1>Catálogo de Inventario</h1>
 
-<!-- 🔍 BUSCADORES -->
 <div class="buscador-container">
 
-    <input 
-        type="text" 
-        id="buscadorNombre" 
-        class="buscador" 
-        placeholder="Buscar por nombre..."
+    <input
+        type="text"
+        id="buscadorNombre"
+        class="buscador"
+        placeholder="Buscar nombre..."
     >
 
-    <input 
-        type="text" 
-        id="buscadorCategoria" 
-        class="buscador" 
-        placeholder="Buscar por categoría..."
+    <input
+        type="text"
+        id="buscadorCategoria"
+        class="buscador"
+        placeholder="Buscar categoría..."
     >
 
-    <button class="btn-buscar" onclick="buscar()">
+    <select
+        id="buscadorSexo"
+        class="buscador"
+    >
+
+        <option value="">Sexo</option>
+        <option value="mujer">Mujer</option>
+        <option value="hombre">Hombre</option>
+        <option value="niño">Niño</option>
+
+    </select>
+
+    <input
+        type="text"
+        id="buscadorTalla"
+        class="buscador"
+        placeholder="Buscar talla..."
+    >
+
+    <button
+        class="btn-buscar"
+        onclick="buscar()"
+    >
         Buscar
     </button>
 
@@ -157,7 +181,9 @@
 <table>
 
     <thead>
+
         <tr>
+
             <th>ID</th>
             <th>Imagen</th>
             <th>Producto</th>
@@ -166,7 +192,9 @@
             <th>Sucursal</th>
             <th>Stock</th>
             <th>Plataformas</th>
+
         </tr>
+
     </thead>
 
     <tbody id="listaCatalogo"></tbody>
@@ -174,24 +202,40 @@
 </table>
 
 <!-- MODAL -->
+
 <div id="modalImagen" class="modal">
-    <span class="cerrar" id="cerrarModal">&times;</span>
-    <img class="modal-contenido" id="imagenGrande">
+
+    <span
+        class="cerrar"
+        id="cerrarModal"
+    >
+        &times;
+    </span>
+
+    <img
+        class="modal-contenido"
+        id="imagenGrande"
+    >
+
 </div>
 
 <script>
 
 let datosGlobales = [];
 
-// CARGAR CATÁLOGO
+// ======================
+// CARGAR CATALOGO
+// ======================
+
 async function cargarCatalogo() {
 
     try {
 
-        const res = await fetch('/api/inventario');
-        const data = await res.json();
+        const res =
+            await fetch('/api/inventario');
 
-        console.log(data);
+        const data =
+            await res.json();
 
         datosGlobales = data;
 
@@ -205,7 +249,10 @@ async function cargarCatalogo() {
 
 }
 
+// ======================
 // MOSTRAR DATOS
+// ======================
+
 function mostrarDatos(data) {
 
     const lista =
@@ -237,10 +284,12 @@ function mostrarDatos(data) {
             <td>${item.id_inventario}</td>
 
             <td>
-                <img 
-                    src="/uploads/${item.imagen}" 
+
+                <img
+                    src="/uploads/${item.imagen}"
                     class="img-producto"
                 >
+
             </td>
 
             <td>${item.nombre || ''}</td>
@@ -248,9 +297,11 @@ function mostrarDatos(data) {
             <td>${item.categoria || ''}</td>
 
             <td>
-                ${item.color || ''} 
-                - 
+
+                ${item.color || ''}
+                -
                 ${item.talla || ''}
+
             </td>
 
             <td>${item.sucursal || ''}</td>
@@ -258,9 +309,11 @@ function mostrarDatos(data) {
             <td>${item.stock || 0}</td>
 
             <td>
-                ${plataformas.length
+
+                ${plataformas.length > 0
                     ? plataformas.join(', ')
                     : 'Sin plataformas'}
+
             </td>
 
         `;
@@ -269,8 +322,8 @@ function mostrarDatos(data) {
 
     });
 
-    // CLICK IMAGEN
-    document.querySelectorAll('.img-producto')
+    document
+    .querySelectorAll('.img-producto')
     .forEach(img => {
 
         img.addEventListener('click', function () {
@@ -283,7 +336,10 @@ function mostrarDatos(data) {
 
 }
 
-// 🔍 BUSCAR
+// ======================
+// BUSCAR
+// ======================
+
 function buscar() {
 
     const nombre =
@@ -294,6 +350,18 @@ function buscar() {
 
     const categoria =
         document.getElementById('buscadorCategoria')
+        .value
+        .trim()
+        .toLowerCase();
+
+    const sexo =
+        document.getElementById('buscadorSexo')
+        .value
+        .trim()
+        .toLowerCase();
+
+    const talla =
+        document.getElementById('buscadorTalla')
         .value
         .trim()
         .toLowerCase();
@@ -309,15 +377,35 @@ function buscar() {
                 (item.categoria || '')
                 .toLowerCase();
 
+            const generoProducto =
+                (item.genero || '')
+                .toLowerCase();
+
+            const tallaProducto =
+                String(item.talla || '')
+                .toLowerCase();
+
             const coincideNombre =
                 nombreProducto.includes(nombre);
 
             const coincideCategoria =
                 categoriaProducto.includes(categoria);
 
+            const coincideSexo =
+                !sexo ||
+                generoProducto.includes(sexo);
+
+            const coincideTalla =
+                !talla ||
+                tallaProducto.includes(talla);
+
             return (
+
                 coincideNombre &&
-                coincideCategoria
+                coincideCategoria &&
+                coincideSexo &&
+                coincideTalla
+
             );
 
         });
@@ -326,7 +414,10 @@ function buscar() {
 
 }
 
-// BUSQUEDA EN TIEMPO REAL
+// ======================
+// EVENTOS
+// ======================
+
 document
 .getElementById('buscadorNombre')
 .addEventListener('keyup', buscar);
@@ -335,40 +426,47 @@ document
 .getElementById('buscadorCategoria')
 .addEventListener('keyup', buscar);
 
-// ABRIR IMAGEN
+document
+.getElementById('buscadorSexo')
+.addEventListener('change', buscar);
+
+document
+.getElementById('buscadorTalla')
+.addEventListener('keyup', buscar);
+
+// ======================
+// MODAL
+// ======================
+
 function abrirImagen(src) {
 
-    const modal =
-        document.getElementById('modalImagen');
+    document
+    .getElementById('imagenGrande')
+    .src = src;
 
-    const imagen =
-        document.getElementById('imagenGrande');
-
-    imagen.src = src;
-
-    modal.style.display = 'flex';
+    document
+    .getElementById('modalImagen')
+    .style.display = 'flex';
 
 }
 
-// CERRAR
 function cerrarImagen() {
 
-    document.getElementById('modalImagen')
+    document
+    .getElementById('modalImagen')
     .style.display = 'none';
 
 }
 
-// BOTON X
 document
 .getElementById('cerrarModal')
 .addEventListener('click', cerrarImagen);
 
-// CLICK FUERA
 document
 .getElementById('modalImagen')
-.addEventListener('click', function (e) {
+.addEventListener('click', function(e){
 
-    if (e.target === this) {
+    if(e.target === this){
 
         cerrarImagen();
 
@@ -376,7 +474,10 @@ document
 
 });
 
+// ======================
 // INICIO
+// ======================
+
 window.onload = cargarCatalogo;
 
 </script>

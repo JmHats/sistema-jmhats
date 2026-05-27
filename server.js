@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const multer = require('multer');
@@ -21,6 +22,7 @@ const pool = new Pool({
 // ======================
 
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 app.use(express.urlencoded({
     extended: true
@@ -419,33 +421,62 @@ app.put(
 
 app.delete('/api/productos/:id', async (req, res) => {
 
+    const client = await pool.connect();
+
     try {
 
-        const id =
-            req.params.id;
+        const id = req.params.id;
 
-        await pool.query(`
+        await client.query('BEGIN');
 
+        // 1. borrar inventario
+        await client.query(`
+            DELETE FROM inventario
+            WHERE id_producto = $1
+        `, [id]);
+
+        // 2. borrar sucursales
+        await client.query(`
+            DELETE FROM sucursales
+            WHERE id_producto = $1
+        `, [id]);
+
+        // 3. borrar variantes
+        await client.query(`
+            DELETE FROM variantes
+            WHERE id_producto = $1
+        `, [id]);
+
+        // 4. borrar plataformas
+        await client.query(`
+            DELETE FROM plataformas
+            WHERE id_producto = $1
+        `, [id]);
+
+        // 5. borrar producto
+        await client.query(`
             DELETE FROM productos
             WHERE id_producto = $1
+        `, [id]);
 
-        `,
-        [id]);
+        await client.query('COMMIT');
 
         res.json({
-            mensaje:
-                'Producto eliminado'
+            mensaje: 'Producto eliminado en todas las tablas'
         });
 
     } catch (error) {
 
+        await client.query('ROLLBACK');
+
         console.log(error);
 
         res.status(500).json({
-            mensaje:
-                'Error al eliminar producto'
+            mensaje: 'Error al eliminar producto'
         });
 
+    } finally {
+        client.release();
     }
 
 });
@@ -545,7 +576,34 @@ app.get('/api/variantes', async (req, res) => {
     }
 
 });
+app.delete('/api/variantes/:id', async (req, res) => {
 
+    try {
+
+        const id = req.params.id;
+
+        await pool.query(`
+
+            DELETE FROM variantes
+            WHERE id_variante = $1
+
+        `, [id]);
+
+        res.json({
+            mensaje: 'Variante eliminada'
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje: 'Error al eliminar variante'
+        });
+
+    }
+
+});
 // ======================
 // SUCURSALES
 // ======================
@@ -648,10 +706,41 @@ app.get('/api/sucursales', async (req, res) => {
 
 });
 
+// ELIMINAR SUCURSAL
+app.delete('/api/sucursales/:id', async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        await pool.query(`
+
+            DELETE FROM sucursales
+            WHERE id_sucursal = $1
+
+        `, [id]);
+
+        res.json({
+            mensaje: 'Sucursal eliminada'
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje: 'Error al eliminar sucursal'
+        });
+
+    }
+
+});
+
 // ======================
 // PLATAFORMAS
 // ======================
 
+// GUARDAR
 app.post('/api/plataformas', async (req, res) => {
 
     try {
@@ -663,26 +752,40 @@ app.post('/api/plataformas', async (req, res) => {
             web
         } = req.body;
 
-        const existe =
-            await pool.query(`
+        // validar producto
+        const producto = await pool.query(`
 
-                SELECT *
-                FROM plataformas
-                WHERE id_producto = $1
+            SELECT *
+            FROM productos
+            WHERE id_producto = $1
 
-            `,
-            [id_producto]);
+        `, [id_producto]);
 
-        if (
-            existe.rows.length > 0
-        ) {
+        if(producto.rows.length === 0){
+
+            return res.status(404).json({
+                mensaje: 'Producto no encontrado'
+            });
+
+        }
+
+        // revisar si ya existe
+        const existe = await pool.query(`
+
+            SELECT *
+            FROM plataformas
+            WHERE id_producto = $1
+
+        `, [id_producto]);
+
+        // actualizar
+        if(existe.rows.length > 0){
 
             await pool.query(`
 
                 UPDATE plataformas
 
                 SET
-
                     mercado_libre = $1,
                     tiktok = $2,
                     web = $3
@@ -697,7 +800,10 @@ app.post('/api/plataformas', async (req, res) => {
                 id_producto
             ]);
 
-        } else {
+        }
+
+        // insertar
+        else {
 
             await pool.query(`
 
@@ -722,18 +828,117 @@ app.post('/api/plataformas', async (req, res) => {
 
         }
 
+        // devolver datos actualizados
+        const plataformas = await pool.query(`
+
+            SELECT
+
+                plataformas.id_plataforma,
+
+                plataformas.mercado_libre,
+                plataformas.tiktok,
+                plataformas.web,
+
+                productos.id_producto,
+                productos.codigo,
+                productos.nombre,
+                productos.imagen
+
+            FROM plataformas
+
+            INNER JOIN productos
+            ON plataformas.id_producto =
+            productos.id_producto
+
+            ORDER BY plataformas.id_plataforma DESC
+
+        `);
+
         res.json({
-            mensaje:
-                'Plataformas guardadas'
+            mensaje: 'Plataformas guardadas',
+            data: plataformas.rows
         });
 
-    } catch (error) {
+    } catch(error){
 
         console.log(error);
 
         res.status(500).json({
-            mensaje:
-                'Error al guardar plataformas'
+            mensaje: 'Error al guardar plataformas'
+        });
+
+    }
+
+});
+
+// OBTENER
+app.get('/api/plataformas', async (req, res) => {
+
+    try {
+
+        const plataformas = await pool.query(`
+
+            SELECT
+
+                plataformas.id_plataforma,
+
+                plataformas.mercado_libre,
+                plataformas.tiktok,
+                plataformas.web,
+
+                productos.id_producto,
+                productos.codigo,
+                productos.nombre,
+                productos.imagen
+
+            FROM plataformas
+
+            INNER JOIN productos
+            ON plataformas.id_producto =
+            productos.id_producto
+
+            ORDER BY plataformas.id_plataforma DESC
+
+        `);
+
+        res.json(plataformas.rows);
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje: 'Error al obtener plataformas'
+        });
+
+    }
+
+});
+
+// ELIMINAR
+app.delete('/api/plataformas/:id', async (req, res) => {
+
+    try {
+
+        const id = req.params.id;
+
+        await pool.query(`
+
+            DELETE FROM plataformas
+            WHERE id_producto = $1
+
+        `, [id]);
+
+        res.json({
+            mensaje: 'Plataforma eliminada'
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje: 'Error al eliminar plataforma'
         });
 
     }
@@ -744,6 +949,7 @@ app.post('/api/plataformas', async (req, res) => {
 // INVENTARIO
 // ======================
 
+// GUARDAR INVENTARIO
 app.post('/api/inventario', async (req, res) => {
 
     try {
@@ -754,6 +960,31 @@ app.post('/api/inventario', async (req, res) => {
             sucursal,
             stock
         } = req.body;
+
+        // validar si ya existe
+        const existe = await pool.query(`
+
+            SELECT *
+            FROM inventario
+            WHERE id_producto = $1
+            AND id_variante = $2
+            AND sucursal = $3
+
+        `,
+        [
+            id_producto,
+            id_variante,
+            sucursal
+        ]);
+
+        if(existe.rows.length > 0){
+
+            return res.status(400).json({
+                mensaje:
+                    'Ese inventario ya existe'
+            });
+
+        }
 
         await pool.query(`
 
@@ -773,7 +1004,7 @@ app.post('/api/inventario', async (req, res) => {
             id_producto,
             id_variante,
             sucursal,
-            stock
+            stock || 0
         ]);
 
         res.json({
@@ -794,6 +1025,8 @@ app.post('/api/inventario', async (req, res) => {
 
 });
 
+// OBTENER INVENTARIO
+// OBTENER INVENTARIO
 app.get('/api/inventario', async (req, res) => {
 
     try {
@@ -810,6 +1043,7 @@ app.get('/api/inventario', async (req, res) => {
                     productos.id_producto,
                     productos.nombre,
                     productos.categoria,
+                    productos.genero,
                     productos.imagen,
 
                     variantes.id_variante,
@@ -849,6 +1083,215 @@ app.get('/api/inventario', async (req, res) => {
         res.status(500).json({
             mensaje:
                 'Error al obtener inventario'
+        });
+
+    }
+
+});
+
+// EDITAR INVENTARIO
+app.put('/api/inventario/:id', async (req, res) => {
+
+    try {
+
+        const id =
+            req.params.id;
+
+        const {
+            id_producto,
+            id_variante,
+            sucursal,
+            stock
+        } = req.body;
+
+        await pool.query(`
+
+            UPDATE inventario
+
+            SET
+
+                id_producto = $1,
+                id_variante = $2,
+                sucursal = $3,
+                stock = $4
+
+            WHERE id_inventario = $5
+
+        `,
+        [
+            id_producto,
+            id_variante,
+            sucursal,
+            stock,
+            id
+        ]);
+
+        res.json({
+            mensaje:
+                'Inventario actualizado'
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje:
+                'Error al actualizar inventario'
+        });
+
+    }
+
+});
+
+// ELIMINAR INVENTARIO
+app.delete('/api/inventario/:id', async (req, res) => {
+
+    try {
+
+        const id =
+            req.params.id;
+
+        await pool.query(`
+
+            DELETE FROM inventario
+            WHERE id_inventario = $1
+
+        `,
+        [id]);
+
+        res.json({
+            mensaje:
+                'Inventario eliminado'
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje:
+                'Error al eliminar inventario'
+        });
+
+    }
+
+});
+
+// AGREGAR STOCK
+app.put('/api/inventario/agregar/:id', async (req, res) => {
+
+    try {
+
+        const id =
+            req.params.id;
+
+        const {
+            cantidad
+        } = req.body;
+
+        await pool.query(`
+
+            UPDATE inventario
+
+            SET stock = stock + $1
+
+            WHERE id_inventario = $2
+
+        `,
+        [
+            cantidad,
+            id
+        ]);
+
+        res.json({
+            mensaje:
+                'Stock agregado'
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje:
+                'Error al agregar stock'
+        });
+
+    }
+
+});
+
+// QUITAR STOCK
+app.put('/api/inventario/quitar/:id', async (req, res) => {
+
+    try {
+
+        const id =
+            req.params.id;
+
+        const {
+            cantidad
+        } = req.body;
+
+        // obtener stock actual
+        const inventario =
+            await pool.query(`
+
+                SELECT stock
+                FROM inventario
+                WHERE id_inventario = $1
+
+            `,
+            [id]);
+
+        if(inventario.rows.length === 0){
+
+            return res.status(404).json({
+                mensaje:
+                    'Inventario no encontrado'
+            });
+
+        }
+
+        const stockActual =
+            inventario.rows[0].stock;
+
+        if(stockActual < cantidad){
+
+            return res.status(400).json({
+                mensaje:
+                    'No hay suficiente stock'
+            });
+
+        }
+
+        await pool.query(`
+
+            UPDATE inventario
+
+            SET stock = stock - $1
+
+            WHERE id_inventario = $2
+
+        `,
+        [
+            cantidad,
+            id
+        ]);
+
+        res.json({
+            mensaje:
+                'Stock descontado'
+        });
+
+    } catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+            mensaje:
+                'Error al quitar stock'
         });
 
     }
