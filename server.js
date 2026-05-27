@@ -3,8 +3,19 @@ const express = require('express');
 const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
+
+// ======================
+// CREAR CARPETA UPLOADS (IMPORTANTE)
+// ======================
+
+const uploadDir = 'public/uploads';
+
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // ======================
 // POSTGRESQL
@@ -22,18 +33,13 @@ const pool = new Pool({
 // ======================
 
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
-
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-app.use(
-    '/uploads',
-    express.static('public/uploads')
-);
+// SOLO ESTA LÍNEA (la correcta)
+app.use('/uploads', express.static('public/uploads'));
+
 
 // ======================
 // MULTER
